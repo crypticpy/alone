@@ -114,7 +114,15 @@ Six warm variants for bracket colorization:
 4. Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 5. Select **Preferences: Color Theme → Alone**
 
-### Manual Installation
+### From VSIX (Recommended for Manual Install)
+
+1. Download `alone-1.0.0.vsix` from [Releases](https://github.com/crypticpy/alone/releases) or the repo root
+2. In VS Code, open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
+3. Run **Extensions: Install from VSIX...**
+4. Select the downloaded `.vsix` file
+5. Reload VS Code when prompted
+
+### From Source
 
 ```bash
 # Clone the repository

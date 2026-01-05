@@ -1,6 +1,7 @@
 .git
 .gitignore
 .github
+.claude
 *.md
 !README.md
 !CHANGELOG.md
