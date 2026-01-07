@@ -12,30 +12,30 @@
     "property.readonly": "#C4B8A4",
     "property.declaration": "#C4B8A4",
     "property.defaultLibrary": "#B89860",
-    "function": "#C8906A",
-    "function.declaration": "#C8906A",
-    "function.defaultLibrary": "#C8906A",
-    "method": "#C8906A",
-    "method.declaration": "#C8906A",
-    "method.defaultLibrary": "#C8906A",
-    "class": "#B89860",
-    "class.declaration": "#B89860",
-    "class.defaultLibrary": "#B89860",
-    "interface": "#B89860",
-    "interface.declaration": "#B89860",
-    "enum": "#B89860",
+    "function": "#B07850",
+    "function.declaration": "#B07850",
+    "function.defaultLibrary": "#B07850",
+    "method": "#B07850",
+    "method.declaration": "#B07850",
+    "method.defaultLibrary": "#B07850",
+    "class": "#9A8048",
+    "class.declaration": "#9A8048",
+    "class.defaultLibrary": "#9A8048",
+    "interface": "#9A8048",
+    "interface.declaration": "#9A8048",
+    "enum": "#9A8048",
     "enumMember": "#D4A878",
-    "struct": "#B89860",
-    "type": "#B89860",
-    "type.declaration": "#B89860",
-    "type.defaultLibrary": "#B89860",
-    "typeParameter": "#B89860",
-    "namespace": "#B89860",
-    "module": "#B89860",
+    "struct": "#9A8048",
+    "type": "#9A8048",
+    "type.declaration": "#9A8048",
+    "type.defaultLibrary": "#9A8048",
+    "typeParameter": "#9A8048",
+    "namespace": "#9A8048",
+    "module": "#9A8048",
     "macro": "#E8B850",
     "decorator": "#A87878",
     "label": "#E8B850",
-    "keyword": { "foreground": "#E8B850", "bold": true },
+    "keyword": { "foreground": "#C8A040", "bold": true },
     "comment": { "foreground": "#5C544A", "italic": true },
     "string": { "foreground": "#9A8B60", "italic": true },
     "number": "#E0A850",
@@ -171,7 +171,7 @@
         "keyword.other"
       ],
       "settings": {
-        "foreground": "#E8B850",
+        "foreground": "#C8A040",
         "fontStyle": "bold"
       }
     },
@@ -185,7 +185,7 @@
         "keyword.control.exception"
       ],
       "settings": {
-        "foreground": "#E8B850",
+        "foreground": "#C8A040",
         "fontStyle": "bold"
       }
     },
@@ -198,7 +198,7 @@
         "keyword.control.as"
       ],
       "settings": {
-        "foreground": "#E8B850",
+        "foreground": "#C8A040",
         "fontStyle": "bold"
       }
     },
@@ -214,7 +214,7 @@
         "keyword.operator.expression"
       ],
       "settings": {
-        "foreground": "#E8B850",
+        "foreground": "#C8A040",
         "fontStyle": "bold"
       }
     },
@@ -226,7 +226,7 @@
         "storage.modifier"
       ],
       "settings": {
-        "foreground": "#E8B850",
+        "foreground": "#C8A040",
         "fontStyle": "bold"
       }
     },
@@ -274,7 +274,7 @@
         "support.function"
       ],
       "settings": {
-        "foreground": "#C8906A"
+        "foreground": "#B07850"
       }
     },
     {
@@ -295,7 +295,7 @@
         "entity.name.method"
       ],
       "settings": {
-        "foreground": "#C8906A"
+        "foreground": "#B07850"
       }
     },
     {
@@ -305,7 +305,7 @@
         "support.function.console"
       ],
       "settings": {
-        "foreground": "#C8906A"
+        "foreground": "#B07850"
       }
     },
     {
@@ -353,7 +353,7 @@
         "support.class"
       ],
       "settings": {
-        "foreground": "#B89860"
+        "foreground": "#9A8048"
       }
     },
     {
@@ -363,7 +363,7 @@
         "support.type.interface"
       ],
       "settings": {
-        "foreground": "#B89860"
+        "foreground": "#9A8048"
       }
     },
     {
@@ -373,7 +373,7 @@
         "meta.type.parameters entity.name.type"
       ],
       "settings": {
-        "foreground": "#B89860"
+        "foreground": "#9A8048"
       }
     },
     {
@@ -383,7 +383,7 @@
         "support.type.enum"
       ],
       "settings": {
-        "foreground": "#B89860"
+        "foreground": "#9A8048"
       }
     },
     {
@@ -404,7 +404,7 @@
         "entity.name.type.module"
       ],
       "settings": {
-        "foreground": "#B89860"
+        "foreground": "#9A8048"
       }
     },
     {

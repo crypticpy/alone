@@ -73,9 +73,9 @@ Minimum 6 L* units between adjacent syntax roles ensures distinguishability.
 | Comments | ![#5C544A](https://via.placeholder.com/15/5C544A/5C544A) | `#5C544A` | *Italic* |
 | Strings | ![#9A8B60](https://via.placeholder.com/15/9A8B60/9A8B60) | `#9A8B60` | *Italic* |
 | Numbers | ![#E0A850](https://via.placeholder.com/15/E0A850/E0A850) | `#E0A850` | Normal |
-| Keywords | ![#E8B850](https://via.placeholder.com/15/E8B850/E8B850) | `#E8B850` | **Bold** |
-| Functions | ![#C8906A](https://via.placeholder.com/15/C8906A/C8906A) | `#C8906A` | Normal |
-| Types | ![#B89860](https://via.placeholder.com/15/B89860/B89860) | `#B89860` | Normal |
+| Keywords | ![#C8A040](https://via.placeholder.com/15/C8A040/C8A040) | `#C8A040` | **Bold** |
+| Functions | ![#B07850](https://via.placeholder.com/15/B07850/B07850) | `#B07850` | Normal |
+| Types | ![#9A8048](https://via.placeholder.com/15/9A8048/9A8048) | `#9A8048` | Normal |
 | Variables | ![#C4B8A4](https://via.placeholder.com/15/C4B8A4/C4B8A4) | `#C4B8A4` | Normal |
 | Operators | ![#D4C8B8](https://via.placeholder.com/15/D4C8B8/D4C8B8) | `#D4C8B8` | Normal |
 | Errors | ![#D46A66](https://via.placeholder.com/15/D46A66/D46A66) | `#D46A66` | **Bold** |
@@ -116,7 +116,7 @@ Six warm variants for bracket colorization:
 
 ### From VSIX (Recommended for Manual Install)
 
-1. Download `alone-1.0.0.vsix` from [Releases](https://github.com/crypticpy/alone/releases) or the repo root
+1. Download the latest `.vsix` from [Releases](https://github.com/crypticpy/alone/releases) or the repo root
 2. In VS Code, open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 3. Run **Extensions: Install from VSIX...**
 4. Select the downloaded `.vsix` file

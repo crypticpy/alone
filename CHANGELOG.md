@@ -5,6 +5,18 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-01-07
+
+### Changed
+
+- Reduced brightness of keywords, functions, and types/classes for better astigmatism support
+  - Keywords: `#E8B850` → `#C8A040` (reduced ~15% brightness)
+  - Functions: `#C8906A` → `#B07850` (reduced ~15% brightness)
+  - Types/Classes: `#B89860` → `#9A8048` (reduced ~15% brightness)
+- This reduces halation/fringing effect for users with astigmatism while maintaining readability
+
+---
+
 ## [1.0.0] - 2025-01-05
 
 ### Added
