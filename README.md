@@ -142,10 +142,10 @@ For the full **Alone** experience, add these to your `settings.json`:
 
 ```json
 {
-  // Font: Choose one with good weight distribution
-  "editor.fontFamily": "'JetBrains Mono', 'Fira Code', 'Hack Nerd Font', monospace",
+  // Font: JetBrains Mono Variable with lighter weight (reduces halation for astigmatism)
+  "editor.fontFamily": "'JetBrains Mono Variable', 'JetBrains Mono', monospace",
   "editor.fontSize": 14,
-  "editor.fontWeight": "400",
+  "editor.fontWeight": "450",
   "editor.fontLigatures": false,
   "editor.lineHeight": 1.6,
   "editor.letterSpacing": 0.3,
