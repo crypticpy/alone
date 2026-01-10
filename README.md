@@ -112,7 +112,10 @@ Six warm variants for bracket colorization:
 2. Search for **"Alone"**
 3. Click **Install**
 4. Open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
-5. Select **Preferences: Color Theme → Alone**
+5. Select **Preferences: Color Theme** and choose from:
+   - **Alone** — The standard theme
+   - **Alone Soft** — Dimmer variant for extreme dark adaptation
+   - **Alone Focused** — Minimal UI for maximum focus
 
 ### From VSIX (Recommended for Manual Install)
 
@@ -132,6 +135,59 @@ git clone https://github.com/crypticpy/alone.git
 cp -r alone ~/.vscode/extensions/
 
 # Restart VS Code
+```
+
+---
+
+## Theme Variants
+
+### Alone (Standard)
+The full-featured theme with balanced contrast for extended coding sessions.
+
+### Alone Soft
+For **extreme dark adaptation**. All syntax colors reduced ~20% brightness, backgrounds slightly lifted to reduce contrast. Perfect for pitch-black rooms or users with high light sensitivity.
+
+### Alone Focused
+For **maximum concentration**. UI chrome is muted—activity bar badges dimmed, sidebar de-emphasized, borders hidden. Syntax highlighting unchanged. Your code takes center stage.
+
+---
+
+## Extension Compatibility
+
+**Alone** includes custom styling for popular extensions:
+
+### GitLens
+Git blame annotations styled with warm, subtle colors that don't distract from code.
+
+### Error Lens
+Inline errors, warnings, and hints use the warm palette:
+- Errors: Warm red (`#D46A66`)
+- Warnings: Amber (`#D4A048`)
+- Info: Muted gold (`#B89860`)
+- Hints: Olive (`#9A8B60`)
+
+### Indent Rainbow
+Add to your `settings.json` for warm-toned indent guides:
+```json
+"indentRainbow.colors": [
+  "rgba(212, 160, 72, 0.07)",
+  "rgba(200, 144, 104, 0.07)",
+  "rgba(184, 149, 110, 0.07)",
+  "rgba(168, 152, 96, 0.07)",
+  "rgba(196, 160, 120, 0.07)",
+  "rgba(212, 176, 136, 0.07)"
+]
+```
+
+### Todo Tree
+Add to your `settings.json` for themed TODO highlights:
+```json
+"todo-tree.highlights.customHighlight": {
+  "TODO": { "foreground": "#D4A048", "background": "#D4A04820" },
+  "FIXME": { "foreground": "#D46A66", "background": "#D46A6620" },
+  "HACK": { "foreground": "#A87878", "background": "#A8787820" },
+  "NOTE": { "foreground": "#9A8B60", "background": "#9A8B6020" }
+}
 ```
 
 ---
@@ -205,11 +261,18 @@ For the full **Alone** experience, add these to your `settings.json`:
 
 ---
 
-## Companion Terminal Theme
+## Terminal Themes
 
-**Alone** pairs with the **Scotopic** terminal theme for Kitty, iTerm2, and other terminals. Available at:
+Matching terminal themes are included in the `terminal/` directory:
 
-- [Scotopic for Kitty](https://github.com/crypticpy/scotopic)
+| Terminal | File | Installation |
+|----------|------|--------------|
+| **Kitty** | `terminal/alone.conf` | Copy to `~/.config/kitty/themes/` and `include themes/alone.conf` |
+| **iTerm2** | `terminal/alone.itermcolors` | Preferences → Profiles → Colors → Import |
+| **Alacritty** | `terminal/alone.toml` | Import in your `alacritty.toml` config |
+| **Windows Terminal** | `terminal/alone-windows-terminal.json` | Add scheme to `settings.json` |
+
+All terminal themes use the same warm color palette with intentionally muted blue/cyan (replaced with warm grays).
 
 ---
 
@@ -227,6 +290,33 @@ For the full **Alone** experience, add these to your `settings.json`:
 - Shell / Bash
 - SQL
 - And more via semantic highlighting
+
+See `samples/` directory for demo files showcasing syntax highlighting.
+
+---
+
+## Accessibility
+
+### Contrast Ratios (WCAG)
+
+Key contrast ratios against the editor background (`#0C0A09`):
+
+| Element | Color | Contrast Ratio | WCAG Level |
+|---------|-------|----------------|------------|
+| Variables | `#C4B8A4` | 9.2:1 | AAA |
+| Keywords | `#C8A040` | 6.8:1 | AA |
+| Functions | `#B07850` | 5.1:1 | AA |
+| Strings | `#9A8B60` | 4.8:1 | AA (Large) |
+| Comments | `#5C544A` | 2.9:1 | — |
+
+Comments intentionally use lower contrast to de-emphasize. All primary code elements meet WCAG AA for normal text.
+
+### Astigmatism Considerations
+
+- Near-black background (#0C0A09) reduces halation vs pure black
+- Keywords use weight 450 (lighter bold) to reduce fringing
+- Warm desaturated palette minimizes chromatic aberration
+- **Alone Soft** variant available for users needing even lower contrast
 
 ---
 

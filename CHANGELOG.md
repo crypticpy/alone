@@ -5,6 +5,44 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-01-09
+
+### Added
+
+- **Theme Variants**
+  - **Alone Soft**: Dimmer variant with ~20% reduced brightness for extreme dark adaptation
+  - **Alone Focused**: Minimal UI variant with muted chrome for maximum concentration
+
+- **Extension Support**
+  - GitLens: Custom colors for blame annotations, gutter, line highlights
+  - Error Lens: Warm-toned error, warning, info, and hint backgrounds/foregrounds
+  - Indent Rainbow: Recommended settings for warm indent guides
+  - Todo Tree: Recommended settings for themed TODO/FIXME highlights
+
+- **Terminal Themes** (in `terminal/` directory)
+  - Kitty: `alone.conf`
+  - iTerm2: `alone.itermcolors`
+  - Alacritty: `alone.toml`
+  - Windows Terminal: `alone-windows-terminal.json`
+
+- **Sample Files** (in `samples/` directory)
+  - TypeScript/React demo (`demo.tsx`)
+  - Python demo (`demo.py`)
+  - Rust demo (`demo.rs`)
+  - Go demo (`demo.go`)
+
+- **Documentation**
+  - WCAG contrast ratio documentation
+  - Astigmatism considerations section
+  - Extension compatibility guide
+
+### Changed
+
+- Refined inlay hint colors for more subtle appearance
+- Updated README with comprehensive feature documentation
+
+---
+
 ## [1.0.1] - 2025-01-07
 
 ### Changed

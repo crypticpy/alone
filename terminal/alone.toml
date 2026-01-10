@@ -1,0 +1,73 @@
+# Alone Theme for Alacritty
+# A warm, earthy terminal color scheme
+# Compatible with Alacritty 0.12+
+
+[colors.primary]
+background = "#0C0A09"
+foreground = "#C4B8A4"
+
+[colors.cursor]
+text = "#0C0A09"
+cursor = "#E8B850"
+
+[colors.vi_mode_cursor]
+text = "#0C0A09"
+cursor = "#E8B850"
+
+[colors.selection]
+text = "#0C0A09"
+background = "#D4A048"
+
+[colors.search.matches]
+foreground = "#0C0A09"
+background = "#D4A048"
+
+[colors.search.focused_match]
+foreground = "#0C0A09"
+background = "#E8B850"
+
+[colors.hints.start]
+foreground = "#0C0A09"
+background = "#D4A048"
+
+[colors.hints.end]
+foreground = "#0C0A09"
+background = "#9A8B60"
+
+[colors.line_indicator]
+foreground = "None"
+background = "None"
+
+[colors.footer_bar]
+foreground = "#C4B8A4"
+background = "#5C544A"
+
+[colors.normal]
+black = "#0C0A09"
+red = "#B85450"
+green = "#9A8B60"
+yellow = "#D4A048"
+blue = "#8B8178"
+magenta = "#A87878"
+cyan = "#9A8B7A"
+white = "#C4B8A4"
+
+[colors.bright]
+black = "#5C544A"
+red = "#D46A66"
+green = "#C4B078"
+yellow = "#E8B850"
+blue = "#A89A8C"
+magenta = "#C89088"
+cyan = "#B8A898"
+white = "#E8DCD0"
+
+[colors.dim]
+black = "#0C0A09"
+red = "#8A3F3C"
+green = "#746A48"
+yellow = "#9F7836"
+blue = "#68615A"
+magenta = "#7E5A5A"
+cyan = "#74685C"
+white = "#93897B"

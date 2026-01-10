@@ -1,0 +1,23 @@
+{
+    "name": "Alone",
+    "background": "#0C0A09",
+    "foreground": "#C4B8A4",
+    "cursorColor": "#E8B850",
+    "selectionBackground": "#D4A048",
+    "black": "#0C0A09",
+    "red": "#B85450",
+    "green": "#9A8B60",
+    "yellow": "#D4A048",
+    "blue": "#8B8178",
+    "purple": "#A87878",
+    "cyan": "#9A8B7A",
+    "white": "#C4B8A4",
+    "brightBlack": "#5C544A",
+    "brightRed": "#D46A66",
+    "brightGreen": "#C4B078",
+    "brightYellow": "#E8B850",
+    "brightBlue": "#A89A8C",
+    "brightPurple": "#C89088",
+    "brightCyan": "#B8A898",
+    "brightWhite": "#E8DCD0"
+}
