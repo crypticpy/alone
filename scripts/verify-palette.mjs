@@ -110,8 +110,21 @@ const variants = variantFiles.map((f) => {
 
 // "Standard" variant is the one used for the L* ladder + README WCAG checks.
 // Marked via verify.isStandard: true. Fall back to source filename "alone.yaml".
-let standard = variants.find((v) => v.isStandard);
-if (!standard) {
+// Multiple isStandard declarations are ambiguous (which variant pegs the
+// ladder?) — reject rather than silently pick the first.
+const standardCandidates = variants.filter((v) => v.isStandard);
+let standard;
+if (standardCandidates.length > 1) {
+  console.error(
+    `Ambiguous standard: ${standardCandidates.length} variants declare verify.isStandard: true — ` +
+      standardCandidates.map((v) => v.sourceFile).join(', ') +
+      '. Exactly one variant should be marked standard.'
+  );
+  process.exit(1);
+}
+if (standardCandidates.length === 1) {
+  standard = standardCandidates[0];
+} else {
   standard = variants.find((v) => v.sourceFile === 'alone.yaml');
 }
 if (!standard) {
@@ -122,7 +135,15 @@ if (!standard) {
 console.log(`Found ${variants.length} variant(s): ${variants.map((v) => v.display).join(', ')}`);
 console.log(`Standard = ${standard.display} (${standard.sourceFile})\n`);
 
-const BG = standard.theme.colors['editor.background'];
+const BG = standard.theme.colors?.['editor.background'];
+if (typeof BG !== 'string' || !/^#[0-9a-fA-F]{6,8}$/.test(BG)) {
+  console.error(
+    `Standard variant (${standard.sourceFile}) is missing or has a malformed ` +
+      `colors["editor.background"] — got ${JSON.stringify(BG)}. ` +
+      `All contrast math is computed against this value, so it must be a 6- or 8-digit hex string.`
+  );
+  process.exit(1);
+}
 
 // ─── 1. L* ladder (standard only) ────────────────────────────────────
 const sem = standard.theme.semanticTokenColors;
