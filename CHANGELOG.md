@@ -5,6 +5,35 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-05-21
+
+### Changed — Palette retune to honor the science
+
+A re-audit found that the published L\* ladder, WCAG claims, and semantic-token mappings had drifted from the actual hex values shipped in v1.1.0. This release re-tunes the palette so the README's stated science matches what the theme actually does.
+
+- **Types lifted into their own L\* tier**: `#9A8048` (L\* 55) → `#BC9858` (L\* 65). Previously class/interface/enum/struct/type/typeParameter/namespace/module all shared one color _and_ sat below Strings in perceptual lightness. They now sit between Keywords and Functions, matching the README ladder.
+- **Functions lifted**: `#B07850` (L\* 57) → `#C08868` (L\* 62). Restores spacing between Functions and Types/Strings.
+- **Cursor dimmed**: `editorCursor.foreground` and `terminalCursor.foreground` dropped from `#E8B850` (the brightest palette hex) to `#D4A048`. A small bright point on near-black is a halation hotspot — for an astigmatism-focused theme, the cursor should not be the brightest thing on screen.
+- **Find-match hue offset**: search highlights moved from gold (`#D4A048`) to burnt-sienna (`#C89068`). Selection and find-match were previously the same hue at different alphas, so overlapping highlights merged into a single warm wash; the offset gives layered transient highlights visual separation.
+- **Inlay hint contrast raised**: foreground from `#5C544A` (L\* 37, below comments) to `#7A7268` (L\* 49). Inlay hints encode actively useful type info; they don't deserve worse contrast than comments.
+- **Bracket pair colors re-spread for monotonic L\* descent**: `#E0B868 → #C89868 → #B08458 → #967048 → #7A5C3C → #604830` (L\* ~78 → ~34). Depth now maps to dimness, giving nesting depth a strong perceptual cue instead of cycling through colors at near-identical lightness.
+- **Escape characters split off the dusty-rose**: `\n`, `\t`, unicode escapes move from `#A87878` italic (which they shared with regex and decorators _and_ sat at near-identical L\* to italic strings) to `#D4B088` bold. Now they pop out of the string they live in.
+- **Semantic-token differentiation via font style**: `interface`, `interface.declaration`, `typeParameter`, `namespace`, and `module` are now italic. `function.defaultLibrary`, `method.defaultLibrary`, `variable.defaultLibrary`, and `property.defaultLibrary` are also italic so built-in / library calls visually separate from your code without needing a new color.
+- **Variant parity restored**: GitLens and Error Lens color keys (added to Standard in v1.1.0) are now present in Alone Soft and Alone Focused too. All three variants share identical key sets.
+
+### Added
+
+- `scripts/retune.mjs` — one-shot palette transform script (record of what changed and how).
+- `scripts/verify-palette.mjs` — verifier that computes CIE L\* and WCAG contrast from the live theme files and asserts the README ladder. Run `node scripts/verify-palette.mjs` after any palette edit.
+- README "Italic Fringing Tradeoff" subsection with a copy-paste `editor.tokenColorCustomizations` snippet that strips italics for users for whom slanted edges cause fringing.
+
+### Fixed (documentation)
+
+- L\* ladder block in README now matches the computed values from the theme files (was off by 5-10 units for Keywords, Functions, and Types).
+- WCAG contrast table re-measured against `#0C0A09` (was understated by ~1.0-1.5 across the board).
+
+---
+
 ## [1.1.0] - 2025-01-09
 
 ### Added
@@ -80,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Eliminated all blue (450-490nm) and cyan (490-520nm) colors
 - Used only wavelengths >575nm for syntax highlighting
-- Implemented L* (lightness) spacing for OLED/miniLED distinguishability
+- Implemented L\* (lightness) spacing for OLED/miniLED distinguishability
 - Near-black background (#0C0A09) for halation reduction
 - Font style differentiation (bold/italic) to extend palette without color proliferation
 
@@ -95,4 +124,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-*Code alone. Code in peace.*
+_Code alone. Code in peace._
