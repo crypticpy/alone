@@ -39,6 +39,22 @@ const OUT = path.join(ROOT, 'themes');
 const TOKEN_RE = /\$\{([^}]+)\}/g;
 const BARE_TOKEN_RE = /^\$\{([^}]+)\}$/;
 
+// Diagnostic helpers for the variant-shape validation below. `typeof null`
+// is "object" and `typeof []` is "object" — both are useless in error
+// messages, so describeType normalizes to the labels a user actually
+// recognizes ("null", "array", "undefined", "string", …). isPlainObject
+// is the dual: matches what `tokens` and the variant root must be.
+function describeType(value) {
+  if (value === undefined) return 'undefined';
+  if (value === null) return 'null';
+  if (Array.isArray(value)) return 'array';
+  return typeof value;
+}
+
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
 function resolveValue(val, tokens, ctxPath, used) {
   if (typeof val !== 'string') return val;
   const bare = val.match(BARE_TOKEN_RE);
@@ -107,33 +123,26 @@ for (const f of variantFiles) {
   const variant = loadYaml(path.join(variantsDir, f));
 
   // Variant-shape validation. yaml.parse will hand us whatever's in the
-  // source, so guard at the boundary: filename must be a non-empty string,
-  // tokens must be a non-null non-array object. Doing this in one pass
-  // (rather than a truthy "missing" check followed by separate type guards)
-  // avoids unreachable branches and yields a specific error for every
-  // failure mode — missing, wrong type, or empty.
-  if (typeof variant.filename !== 'string' || variant.filename.length === 0) {
+  // source — including the document root being null (empty file), a
+  // scalar (e.g. just "42"), or an array — so guard at the boundary in
+  // three steps: root must be a mapping, filename must be a non-empty
+  // string, tokens must be a mapping. Without the root guard, the
+  // `variant.filename` access on a null root would throw a raw TypeError
+  // before our validation runs.
+  if (!isPlainObject(variant)) {
     throw new Error(
-      `${f}: "filename" must be a non-empty string (got ${
-        variant.filename === undefined ? 'undefined' : typeof variant.filename
-      }). Variant filenames must be plain JSON names under themes/.`
+      `${f}: variant root must be a mapping/object (got ${describeType(variant)}).`
     );
   }
-  if (
-    typeof variant.tokens !== 'object' ||
-    variant.tokens === null ||
-    Array.isArray(variant.tokens)
-  ) {
+  if (typeof variant.filename !== 'string' || variant.filename.length === 0) {
     throw new Error(
-      `${f}: "tokens" must be a mapping of token-name → value (got ${
-        variant.tokens === undefined
-          ? 'undefined'
-          : variant.tokens === null
-            ? 'null'
-            : Array.isArray(variant.tokens)
-              ? 'array'
-              : typeof variant.tokens
-      }).`
+      `${f}: "filename" must be a non-empty string (got ${describeType(variant.filename)}). ` +
+        `Variant filenames must be plain JSON names under themes/.`
+    );
+  }
+  if (!isPlainObject(variant.tokens)) {
+    throw new Error(
+      `${f}: "tokens" must be a mapping of token-name → value (got ${describeType(variant.tokens)}).`
     );
   }
 
