@@ -93,11 +93,13 @@ if (variantFiles.length === 0) {
   process.exit(1);
 }
 
-// Track canonical filename → source variant yaml so we can fail fast on
+// Track resolved-path → source variant yaml so we can fail fast on
 // collisions. We canonicalize via path.resolve so two variants with
-// e.g. "foo.json" and "./foo.json" (or "sub/../foo.json") collide as
-// the same destination. We also reject filenames that escape themes/ —
-// the pipeline is only meant to write JSON inside themes/.
+// e.g. "foo.json" and "./foo.json" collide as the same destination.
+// The error-message contract is "plain JSON names under themes/", so
+// we also reject any filename containing a path separator (subdirectories
+// are not part of the pipeline's output shape — all theme JSONs live
+// flat in themes/).
 const seenFilenames = new Map();
 const OUT_ABS = path.resolve(OUT);
 
@@ -107,26 +109,39 @@ for (const f of variantFiles) {
     throw new Error(`${f}: missing required keys "filename" and/or "tokens"`);
   }
 
-  // Canonicalize the output path and ensure it stays under themes/.
-  // Use path.relative to detect traversal portably (a leading ".." or
-  // an absolute result means the target is outside OUT_ABS).
+  // Reject anything containing a path separator. Catches "sub/foo.json"
+  // (which would have passed the containment check below) and absolute
+  // paths like "/etc/passwd". On POSIX path.sep === '/' so the second
+  // disjunct is redundant; on Windows it catches backslash separators.
+  if (variant.filename.includes('/') || variant.filename.includes(path.sep)) {
+    throw new Error(
+      `${f}: filename "${variant.filename}" contains a path separator. ` +
+        `Variant filenames must be plain JSON names under themes/.`
+    );
+  }
+
+  // Canonical containment check. resolvedOut must live strictly inside
+  // OUT_ABS — anything else (filename of ".", "..", or a path that
+  // resolves outside the dir) is rejected. startsWith(OUT_ABS + sep) is
+  // the canonical pattern for "path inside directory"; it handles the
+  // empty-relative, parent-dir, and Windows-different-drive cases in
+  // one check.
   const resolvedOut = path.resolve(OUT_ABS, variant.filename);
-  const canonical = path.relative(OUT_ABS, resolvedOut);
-  if (canonical === '' || canonical.startsWith('..') || path.isAbsolute(canonical)) {
+  if (!resolvedOut.startsWith(OUT_ABS + path.sep)) {
     throw new Error(
       `${f}: filename "${variant.filename}" resolves outside themes/ (${resolvedOut}). ` +
         `Variant filenames must be plain JSON names under themes/.`
     );
   }
 
-  if (seenFilenames.has(canonical)) {
-    const prior = seenFilenames.get(canonical);
+  if (seenFilenames.has(resolvedOut)) {
+    const prior = seenFilenames.get(resolvedOut);
     throw new Error(
-      `${f}: filename "${variant.filename}" (canonical: themes/${canonical}) ` +
+      `${f}: filename "${variant.filename}" (canonical: ${path.relative(OUT_ABS, resolvedOut)}) ` +
         `already used by ${prior}. Each variant must produce a unique output JSON.`
     );
   }
-  seenFilenames.set(canonical, f);
+  seenFilenames.set(resolvedOut, f);
 
   // Resolve, tracking which tokens were actually referenced by base.yaml.
   const used = new Set();
