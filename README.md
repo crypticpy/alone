@@ -60,7 +60,7 @@ L* 49  ██████████████                Punctuation
 L* 36  █████████                     Comments (italic)
 ```
 
-Major adjacent tiers are spaced ≥4 L\* apart (most by 6+). Closer pairs — Types/Functions (3), Strings/Special (3) — are differentiated by font style and hue, not just lightness. Run `node scripts/verify-palette.mjs` to recompute these from the live theme files.
+The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 36) is a ~45-unit range. The largest gaps cluster at the top and bottom (Operators→Variables 5.9, Special→Punctuation 6.7, Punctuation→Comments 12.3); the middle tiers run in the ~3 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. Run `node scripts/verify-palette.mjs` to recompute these against the live theme files; the verifier hard-fails on out-of-order roles and warns on any adjacent gap below 3 L\*.
 
 ---
 

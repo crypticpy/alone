@@ -224,14 +224,18 @@ const FOCUSED_EDITS = STANDARD_EDITS
   .filter(Boolean);
 
 /** Applies an edit list to a file. Every edit must match at least once.
- *  This is a one-shot script — to re-run it, `git checkout -- themes/` first. */
+ *  `find` is always a RegExp (string-form is rejected to avoid accidental
+ *  regex interpretation of literal substrings). One-shot script — to
+ *  re-run it, `git checkout -- themes/` first. */
 function applyEdits(file, edits) {
   let content = fs.readFileSync(file, 'utf8');
   const misses = [];
   for (const { find, replace, label } of edits) {
-    const re = find instanceof RegExp ? find : new RegExp(find);
+    if (!(find instanceof RegExp)) {
+      throw new Error(`edit "${label}": find must be a RegExp, got ${typeof find}`);
+    }
     const before = content;
-    content = content.replace(re, replace);
+    content = content.replace(find, replace);
     if (content === before) misses.push(label);
   }
   if (misses.length) {
