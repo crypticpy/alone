@@ -93,25 +93,40 @@ if (variantFiles.length === 0) {
   process.exit(1);
 }
 
-// Track filename → source variant yaml so we can fail fast on collisions.
-// Two variants writing to the same themes/<filename>.json would silently
-// race; ordering by readdir is not stable enough to call this "the user
-// intended the later one to win".
+// Track canonical filename → source variant yaml so we can fail fast on
+// collisions. We canonicalize via path.resolve so two variants with
+// e.g. "foo.json" and "./foo.json" (or "sub/../foo.json") collide as
+// the same destination. We also reject filenames that escape themes/ —
+// the pipeline is only meant to write JSON inside themes/.
 const seenFilenames = new Map();
+const OUT_ABS = path.resolve(OUT);
 
 for (const f of variantFiles) {
   const variant = loadYaml(path.join(variantsDir, f));
   if (!variant.filename || !variant.tokens) {
     throw new Error(`${f}: missing required keys "filename" and/or "tokens"`);
   }
-  if (seenFilenames.has(variant.filename)) {
-    const prior = seenFilenames.get(variant.filename);
+
+  // Canonicalize the output path and ensure it stays under themes/.
+  // Use path.relative to detect traversal portably (a leading ".." or
+  // an absolute result means the target is outside OUT_ABS).
+  const resolvedOut = path.resolve(OUT_ABS, variant.filename);
+  const canonical = path.relative(OUT_ABS, resolvedOut);
+  if (canonical === '' || canonical.startsWith('..') || path.isAbsolute(canonical)) {
     throw new Error(
-      `${f}: filename "${variant.filename}" already used by ${prior}. ` +
-        `Each variant must produce a unique output JSON.`
+      `${f}: filename "${variant.filename}" resolves outside themes/ (${resolvedOut}). ` +
+        `Variant filenames must be plain JSON names under themes/.`
     );
   }
-  seenFilenames.set(variant.filename, f);
+
+  if (seenFilenames.has(canonical)) {
+    const prior = seenFilenames.get(canonical);
+    throw new Error(
+      `${f}: filename "${variant.filename}" (canonical: themes/${canonical}) ` +
+        `already used by ${prior}. Each variant must produce a unique output JSON.`
+    );
+  }
+  seenFilenames.set(canonical, f);
 
   // Resolve, tracking which tokens were actually referenced by base.yaml.
   const used = new Set();
@@ -131,8 +146,7 @@ for (const f of variantFiles) {
     );
   }
 
-  const outPath = path.join(OUT, variant.filename);
   // Match the snapshot format: 2-space indent, trailing newline.
-  fs.writeFileSync(outPath, JSON.stringify(built, null, 2) + '\n');
-  console.log(`  wrote ${path.relative(ROOT, outPath)}  (${variant.display})`);
+  fs.writeFileSync(resolvedOut, JSON.stringify(built, null, 2) + '\n');
+  console.log(`  wrote ${path.relative(ROOT, resolvedOut)}  (${variant.display})`);
 }

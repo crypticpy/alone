@@ -136,7 +136,9 @@ console.log(`Found ${variants.length} variant(s): ${variants.map((v) => v.displa
 console.log(`Standard = ${standard.display} (${standard.sourceFile})\n`);
 
 const BG = standard.theme.colors?.['editor.background'];
-if (typeof BG !== 'string' || !/^#[0-9a-fA-F]{6,8}$/.test(BG)) {
+// {6,8} accepts 7 too, but a 7-digit hex string isn't a valid color (RGB or RGBA
+// only). Use explicit alternation to reject 7-char strings.
+if (typeof BG !== 'string' || !/^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(BG)) {
   console.error(
     `Standard variant (${standard.sourceFile}) is missing or has a malformed ` +
       `colors["editor.background"] — got ${JSON.stringify(BG)}. ` +
