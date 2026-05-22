@@ -105,25 +105,34 @@ const OUT_ABS = path.resolve(OUT);
 
 for (const f of variantFiles) {
   const variant = loadYaml(path.join(variantsDir, f));
-  if (!variant.filename || !variant.tokens) {
-    throw new Error(`${f}: missing required keys "filename" and/or "tokens"`);
-  }
 
-  // Type guards. The truthy check above accepts `filename: 123` (a number)
-  // and `tokens: "not an object"`, which would then crash deeper with raw
-  // TypeErrors from `.includes()` / `Object.keys` instead of our contract
-  // errors. yaml.parse will happily hand us those types from a malformed
-  // variant file, so guard at the boundary.
+  // Variant-shape validation. yaml.parse will hand us whatever's in the
+  // source, so guard at the boundary: filename must be a non-empty string,
+  // tokens must be a non-null non-array object. Doing this in one pass
+  // (rather than a truthy "missing" check followed by separate type guards)
+  // avoids unreachable branches and yields a specific error for every
+  // failure mode — missing, wrong type, or empty.
   if (typeof variant.filename !== 'string' || variant.filename.length === 0) {
     throw new Error(
-      `${f}: "filename" must be a non-empty string (got ${typeof variant.filename}). ` +
-        `Variant filenames must be plain JSON names under themes/.`
+      `${f}: "filename" must be a non-empty string (got ${
+        variant.filename === undefined ? 'undefined' : typeof variant.filename
+      }). Variant filenames must be plain JSON names under themes/.`
     );
   }
-  if (typeof variant.tokens !== 'object' || variant.tokens === null || Array.isArray(variant.tokens)) {
+  if (
+    typeof variant.tokens !== 'object' ||
+    variant.tokens === null ||
+    Array.isArray(variant.tokens)
+  ) {
     throw new Error(
       `${f}: "tokens" must be a mapping of token-name → value (got ${
-        Array.isArray(variant.tokens) ? 'array' : typeof variant.tokens
+        variant.tokens === undefined
+          ? 'undefined'
+          : variant.tokens === null
+            ? 'null'
+            : Array.isArray(variant.tokens)
+              ? 'array'
+              : typeof variant.tokens
       }).`
     );
   }
