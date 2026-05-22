@@ -1,20 +1,28 @@
 #!/usr/bin/env node
 /**
- * Palette verifier for the Alone theme.
+ * Palette verifier for the Alone theme family.
  *
- * Loads themes/alone-color-theme.json (Standard) and checks:
+ * Discovers every variant under themes/_src/variants/*.yaml, loads the
+ * corresponding built JSON from themes/, and checks:
  *
- *   1. L* ladder — every headline syntax role's L* descends in the
- *      documented order (monotonic). Out-of-order pairs hard-fail.
- *      Adjacent gaps below TIGHT_GAP_THRESHOLD (3 L*) emit a soft
- *      warning rather than failing, because the warm-only palette
- *      can't deliver large gaps across all ten tiers — the middle
- *      runs in the ~3 L* range and relies on font style + hue.
+ *   1. L* ladder (on the "standard" variant) — every headline syntax
+ *      role's L* descends in the documented order (monotonic). Out-of-
+ *      order pairs hard-fail. Adjacent gaps below TIGHT_GAP_THRESHOLD
+ *      (3 L*) emit a soft warning rather than failing, because the
+ *      warm-only palette can't deliver large gaps across all ten tiers —
+ *      the middle runs in the ~3 L* range and relies on font style + hue.
  *   2. WCAG contrast ratios in README.md match computed values against
- *      the editor background #0C0A09 (within ±WCAG_TOLERANCE).
- *   3. No syntax-role hex falls in the blue/cyan band (B > R and B > G).
- *   4. Variant key parity — the three theme JSONs declare identical
- *      sets of `colors.*` keys and `semanticTokenColors.*` keys.
+ *      the editor background (within ±WCAG_TOLERANCE), checked on the
+ *      "standard" variant.
+ *   3. Wavelength constraint — per-variant. Each variant declares its
+ *      wavelength band via `verify.wavelengthBand` in its yaml. Bands:
+ *        warm     — no syntax hex in the blue/cyan band (B>R and B>G)
+ *        red-amber — long-wave dominant; R≥G≥B and R-B ≥ 0x40
+ *        red-only  — strict mono-red; R≥G+0x30 and R≥B+0x60
+ *      Default is `warm` if unspecified. (Tighter bands are placeholders
+ *      for future scotopic-red variants; no current variant uses them.)
+ *   4. Variant key parity — every variant declares the same set of
+ *      `colors.*` keys and `semanticTokenColors.*` keys.
  *
  * Exits non-zero on any failure with a per-check report.
  *
@@ -24,9 +32,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
+import YAML from 'yaml';
 
 const HERE = path.dirname(url.fileURLToPath(import.meta.url));
-const THEMES = path.join(HERE, '..', 'themes');
+const ROOT = path.join(HERE, '..');
+const THEMES = path.join(ROOT, 'themes');
+const VARIANTS_DIR = path.join(THEMES, '_src', 'variants');
+
+const TIGHT_GAP_THRESHOLD = 3.0;
+const WCAG_TOLERANCE = 0.05;
 
 // ─── Color math ──────────────────────────────────────────────────────
 function hexToLinearRgb(hex) {
@@ -44,7 +58,6 @@ function relativeLuminance(hex) {
 }
 
 function cielab_L(hex) {
-  // D65 reference Y = 1.0. L* = 116·f(Y/Yn) − 16.
   const Y = relativeLuminance(hex);
   const f = (t) => (t > Math.pow(6 / 29, 3) ? Math.cbrt(t) : (1 / 3) * Math.pow(29 / 6, 2) * t + 4 / 29);
   return 116 * f(Y) - 16;
@@ -57,20 +70,63 @@ function contrastRatio(fg, bg) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// ─── Loading ─────────────────────────────────────────────────────────
-const standard = JSON.parse(fs.readFileSync(path.join(THEMES, 'alone-color-theme.json'), 'utf8'));
-const soft = JSON.parse(fs.readFileSync(path.join(THEMES, 'alone-soft-color-theme.json'), 'utf8'));
-const focused = JSON.parse(fs.readFileSync(path.join(THEMES, 'alone-focused-color-theme.json'), 'utf8'));
+function rgbChannels(hex) {
+  const h = hex.replace('#', '').slice(0, 6);
+  return {
+    r: parseInt(h.slice(0, 2), 16),
+    g: parseInt(h.slice(2, 4), 16),
+    b: parseInt(h.slice(4, 6), 16),
+  };
+}
 
-const BG = standard.colors['editor.background']; // #0C0A09
+// ─── Discover variants ───────────────────────────────────────────────
+const variantFiles = fs
+  .readdirSync(VARIANTS_DIR)
+  .filter((f) => f.endsWith('.yaml'))
+  .sort();
 
-// Pull the headline syntax-role hex codes from the parsed theme (not hardcoded).
-const sem = standard.semanticTokenColors;
+if (variantFiles.length === 0) {
+  console.error(`No variants found under ${VARIANTS_DIR}`);
+  process.exit(1);
+}
+
+const variants = variantFiles.map((f) => {
+  const meta = YAML.parse(fs.readFileSync(path.join(VARIANTS_DIR, f), 'utf8'));
+  if (!meta.filename) throw new Error(`${f}: missing "filename"`);
+  const jsonPath = path.join(THEMES, meta.filename);
+  if (!fs.existsSync(jsonPath)) {
+    throw new Error(`${f} references ${meta.filename} but it does not exist — run npm run build:themes first`);
+  }
+  const theme = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  return {
+    sourceFile: f,
+    display: meta.display ?? theme.name,
+    filename: meta.filename,
+    band: meta.verify?.wavelengthBand ?? 'warm',
+    isStandard: meta.verify?.isStandard === true,
+    theme,
+  };
+});
+
+// "Standard" variant is the one used for the L* ladder + README WCAG checks.
+// Marked via verify.isStandard: true. Fall back to source filename "alone.yaml".
+let standard = variants.find((v) => v.isStandard);
+if (!standard) {
+  standard = variants.find((v) => v.sourceFile === 'alone.yaml');
+}
+if (!standard) {
+  console.error('No "standard" variant — set verify.isStandard: true on one variant yaml.');
+  process.exit(1);
+}
+
+console.log(`Found ${variants.length} variant(s): ${variants.map((v) => v.display).join(', ')}`);
+console.log(`Standard = ${standard.display} (${standard.sourceFile})\n`);
+
+const BG = standard.theme.colors['editor.background'];
+
+// ─── 1. L* ladder (standard only) ────────────────────────────────────
+const sem = standard.theme.semanticTokenColors;
 const fg = (v) => (typeof v === 'string' ? v : v.foreground);
-
-// Punctuation isn't a semantic token; it's defined as a TextMate scope.
-// Look it up by its named block so a future palette edit can't drift past
-// this verifier silently.
 function tokenForegroundByName(theme, name) {
   const entry = theme.tokenColors.find((t) => t.name === name);
   const hex = entry?.settings?.foreground;
@@ -78,7 +134,6 @@ function tokenForegroundByName(theme, name) {
   return hex;
 }
 
-// Order matches the README L* ladder (Types > Functions per the documented spec).
 const ROLES = {
   Operators:   fg(sem['operator']),
   Variables:   fg(sem['variable']),
@@ -87,30 +142,16 @@ const ROLES = {
   Types:       fg(sem['type']),
   Functions:   fg(sem['function']),
   Strings:     fg(sem['string']),
-  Special:     fg(sem['decorator']),                          // dusty rose, also regex
-  Punctuation: tokenForegroundByName(standard, 'Punctuation'),
+  Special:     fg(sem['decorator']),
+  Punctuation: tokenForegroundByName(standard.theme, 'Punctuation'),
   Comments:    fg(sem['comment']),
 };
-
-// ─── 1. L* ladder ────────────────────────────────────────────────────
-// Compute and print actual L* values + per-row gaps. Hard-fail only on
-// out-of-order roles (the ladder must be monotonic descending). Soft-warn
-// on any gap below TIGHT_GAP_THRESHOLD so future palette edits surface
-// the regression even if they don't cross the ordering line.
-//
-// The warm-only palette can't deliver large gaps across all ten tiers
-// (range from Operators L*81 to Comments L*36 is ~45 units), so the
-// middle of the ladder runs in the ~3 L* range and relies on font style
-// and hue for differentiation. The verifier exists to catch genuine
-// regressions, not to enforce an unphysical spacing.
-const TIGHT_GAP_THRESHOLD = 3.0;
-const WCAG_TOLERANCE = 0.05;
 
 const ladder = Object.entries(ROLES).map(([name, hex]) => ({
   name, hex, L: cielab_L(hex), contrast: contrastRatio(hex, BG),
 }));
 
-console.log(`\nL* ladder (against bg ${BG}):\n`);
+console.log(`L* ladder for ${standard.display} (against bg ${BG}):\n`);
 console.log('  Role          Hex       L*     Δ    Contrast');
 console.log('  ──────────────────────────────────────────────');
 for (let i = 0; i < ladder.length; i++) {
@@ -137,7 +178,6 @@ for (let i = 1; i < ladder.length; i++) {
 }
 
 // ─── 2. Headline WCAG contrast claims from README ────────────────────
-// v1.2.0 README table values (re-measured against #0C0A09 after the retune).
 const README_CONTRAST = {
   Variables: 10.1,
   Keywords:   8.1,
@@ -157,26 +197,55 @@ for (const [name, claimed] of Object.entries(README_CONTRAST)) {
   if (Math.abs(delta) > WCAG_TOLERANCE) failures++;
 }
 
-// ─── 3. No syntax-role hex in the blue/cyan band ─────────────────────
-// We define "blue/cyan" loosely as: B channel > R channel AND B > G.
-// Warm-only palette should never trip this.
-console.log('\nWavelength check (no syntax hex in blue/cyan band):\n');
-function isBlueOrCyan(hex) {
-  const h = hex.replace('#', '').slice(0, 6);
-  const r = parseInt(h.slice(0, 2), 16);
-  const g = parseInt(h.slice(2, 4), 16);
-  const b = parseInt(h.slice(4, 6), 16);
-  return b > r && b > g;
-}
-let coolFound = 0;
-for (const { name, hex } of ladder) {
-  if (isBlueOrCyan(hex)) {
-    console.log(`  ✗ ${name} (${hex}) is in blue/cyan band`);
-    coolFound++;
-    failures++;
+// ─── 3. Wavelength check per variant ─────────────────────────────────
+function bandCheck(band, hex) {
+  const { r, g, b } = rgbChannels(hex);
+  switch (band) {
+    case 'warm':
+      // No syntax hex in the blue/cyan band (B > R and B > G).
+      return !(b > r && b > g);
+    case 'red-amber':
+      // Long-wave dominant: R ≥ G ≥ B, with R-B headroom ≥ 0x40.
+      return r >= g && g >= b && (r - b) >= 0x40;
+    case 'red-only':
+      // Strict mono-red: R dominates both G and B by wide margins.
+      return r >= g + 0x30 && r >= b + 0x60;
+    default:
+      throw new Error(`unknown wavelength band: ${band}`);
   }
 }
-if (coolFound === 0) console.log('  ✓ all syntax roles are warm (R≥B or G≥B)');
+
+function rolesForVariant(theme) {
+  // Same headline-role extraction as the standard, but per-variant.
+  const s = theme.semanticTokenColors;
+  return {
+    Operators:   fg(s['operator']),
+    Variables:   fg(s['variable']),
+    Numbers:     fg(s['number']),
+    Keywords:    fg(s['keyword']),
+    Types:       fg(s['type']),
+    Functions:   fg(s['function']),
+    Strings:     fg(s['string']),
+    Special:     fg(s['decorator']),
+    Punctuation: tokenForegroundByName(theme, 'Punctuation'),
+    Comments:    fg(s['comment']),
+  };
+}
+
+console.log('\nWavelength check (per variant):\n');
+for (const v of variants) {
+  const roles = rolesForVariant(v.theme);
+  const offenders = Object.entries(roles).filter(([_, hex]) => !bandCheck(v.band, hex));
+  if (offenders.length === 0) {
+    console.log(`  ✓ ${v.display.padEnd(20)} band=${v.band.padEnd(10)}  all syntax roles in band`);
+  } else {
+    console.log(`  ✗ ${v.display} band=${v.band}: ${offenders.length} role(s) outside band:`);
+    for (const [name, hex] of offenders) {
+      console.log(`      ${name} (${hex})`);
+      failures++;
+    }
+  }
+}
 
 // ─── 4. Variant key parity ───────────────────────────────────────────
 console.log('\nVariant key parity:\n');
@@ -188,28 +257,28 @@ function diffSets(a, b, label) {
   const onlyB = [...b].filter((k) => !a.has(k));
   if (onlyA.length || onlyB.length) {
     console.log(`  ✗ ${label}:`);
-    if (onlyA.length) console.log(`     only in left: ${onlyA.slice(0, 5).join(', ')}${onlyA.length > 5 ? '…' : ''}`);
+    if (onlyA.length) console.log(`     only in left:  ${onlyA.slice(0, 5).join(', ')}${onlyA.length > 5 ? '…' : ''}`);
     if (onlyB.length) console.log(`     only in right: ${onlyB.slice(0, 5).join(', ')}${onlyB.length > 5 ? '…' : ''}`);
     return false;
   }
   return true;
 }
 
-const stdColors = keySet(standard.colors);
-const softColors = keySet(soft.colors);
-const focColors = keySet(focused.colors);
-const stdSem = keySet(standard.semanticTokenColors);
-const softSem = keySet(soft.semanticTokenColors);
-const focSem = keySet(focused.semanticTokenColors);
+// All variants must match the standard's key set, both for colors and
+// semanticTokenColors. N-way: standard vs each non-standard.
+const stdColors = keySet(standard.theme.colors);
+const stdSem = keySet(standard.theme.semanticTokenColors);
 
-const checks = [
-  diffSets(stdColors, softColors, 'colors: standard vs soft'),
-  diffSets(stdColors, focColors, 'colors: standard vs focused'),
-  diffSets(stdSem, softSem, 'semanticTokenColors: standard vs soft'),
-  diffSets(stdSem, focSem, 'semanticTokenColors: standard vs focused'),
-];
-if (checks.every(Boolean)) console.log('  ✓ all three variants share identical key sets');
-else failures += checks.filter((x) => !x).length;
+let parityOk = true;
+for (const v of variants) {
+  if (v === standard) continue;
+  const vColors = keySet(v.theme.colors);
+  const vSem = keySet(v.theme.semanticTokenColors);
+  parityOk = diffSets(stdColors, vColors, `colors: ${standard.display} vs ${v.display}`) && parityOk;
+  parityOk = diffSets(stdSem, vSem, `semanticTokenColors: ${standard.display} vs ${v.display}`) && parityOk;
+}
+if (parityOk) console.log(`  ✓ all ${variants.length} variants share identical key sets`);
+else failures++;
 
 // ─── Result ──────────────────────────────────────────────────────────
 console.log('');

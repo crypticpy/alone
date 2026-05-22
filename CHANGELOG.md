@@ -5,6 +5,23 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-05-22
+
+### Changed — Internal: theme variants now generated from a base + per-variant deltas pipeline
+
+No user-visible changes — the shipped `themes/*.json` files are **semantically identical** to v1.2.0 (verified by `diff <(jq -S ...)`). The text layout differs because the generator always expands multi-key objects across lines, where v1.2.0 hand-formatted some `{ foreground, italic }` settings as compact one-liners; values, scopes, ordering, and key sets are unchanged. This is groundwork for the upcoming family expansion: with three hand-maintained ~1650-line JSONs we were already past the breaking point (v1.2.0 needed a one-shot transform script to keep them in sync), and the next milestones add four more variants on top.
+
+- **Build pipeline** (`scripts/build-themes.mjs`, `npm run build:themes`). Reads `themes/_src/base.yaml` (the structural skeleton with `${token.name}` placeholders at leaves that vary across variants) plus each `themes/_src/variants/<name>.yaml` (per-variant token bindings) and emits `themes/<filename>.json` per variant. Deterministic, ordered.
+- **Verifier generalized** (`scripts/verify-palette.mjs`). Discovers variants from `themes/_src/variants/*.yaml` instead of being hardcoded to three. Each variant declares its `verify.wavelengthBand` (one of `warm`, `red-amber`, `red-only`); the wavelength check is run against every variant, in its declared band. The L\* ladder and README WCAG claims are still pegged to the "standard" variant (Alone), marked with `verify.isStandard: true`.
+- **Combined check** (`npm run check` = `build:themes && verify`).
+- **Theme Variants section in README** repositions Alone as the **mesopic** family member, setting up the family-of-variants framing for the upcoming additions.
+- **Building the Themes (Contributors)** section added to README explaining how to edit `_src/`, what `base.yaml` vs `variants/<name>.yaml` do, and how to add a new variant.
+- `yaml` (npm package) added as a `devDependency`. The published VSIX stays dependency-free at runtime; `yaml` is only used by the build/verify scripts.
+- `scripts/_extract-deltas.mjs` — the one-shot extractor that produced the v1.3.0 `_src/` tree from the v1.2.0 snapshot. Kept in the repo for historical traceability; not part of the build.
+- `themes/_snapshot/` — v1.2.0 snapshot of the three shipped JSONs, kept as a regression baseline. The build verifies `diff <(jq -S . themes/X.json) <(jq -S . themes/_snapshot/X.json)` is empty for each existing variant on every release that doesn't intentionally change the palette.
+
+---
+
 ## [1.2.0] - 2026-05-21
 
 ### Changed — Palette retune to honor the science

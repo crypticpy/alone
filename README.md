@@ -145,9 +145,11 @@ cp -r alone ~/.vscode/extensions/
 
 ## Theme Variants
 
-### Alone (Standard)
+**Alone** is the headline family member — a **mesopic**-light theme tuned for the intermediate range where both rod and cone receptors contribute, typical of a dim-but-not-dark room. The two siblings below are positioned around it; further along the dark-adaptation continuum, the family has room to grow (see [Future Plans](CHANGELOG.md#future-plans)).
 
-The full-featured theme with balanced contrast for extended coding sessions.
+### Alone (Standard) — _mesopic_
+
+The full-featured theme with balanced contrast for extended coding sessions. Default starting point for most users.
 
 ### Alone Soft
 
@@ -392,6 +394,29 @@ Yes. The near-black background (#0C0A09) reduces halation compared to pure black
 ### Can I use this in a lit room?
 
 **Alone** is optimized for dark environments. In lit rooms, you may want higher contrast. That said, many users find it comfortable in low ambient light conditions.
+
+---
+
+## Building the Themes (Contributors)
+
+The shipped `themes/*.json` files are **generated**. Don't edit them directly — your edits will be overwritten on the next build.
+
+The source of truth lives under `themes/_src/`:
+
+- **`themes/_src/base.yaml`** — the structural skeleton. Every key the variants share (shape, scopes, font styles, and any hex that happens to be identical across all variants) lives here as a literal. Every leaf that varies across variants is written as `${token.name}`.
+- **`themes/_src/variants/<name>.yaml`** — per-variant bindings: `display`, `filename`, a `verify` block (which wavelength band the variant should pass and whether it's the "standard" used for the L\* ladder / README WCAG checks), and a `tokens:` block supplying the hex/alpha values for that variant's `${token.name}` references.
+
+Two scripts:
+
+```bash
+npm run build:themes   # regenerate themes/*.json from _src/
+npm run verify         # check L*, WCAG, wavelength bands, and key parity
+npm run check          # both, in sequence
+```
+
+To add a new variant: copy an existing variants file, change `display` / `filename` / `verify`, fill in the `tokens:` block with the new palette, then `npm run check`. No edits to `base.yaml` are needed unless the new variant introduces a new key or scope (in which case all variants must add it — the parity check enforces this).
+
+To change the **shape** (add a scope, add a colors key, reorder tokenColors entries) edit `base.yaml`; the change applies uniformly to every variant.
 
 ---
 
