@@ -109,6 +109,25 @@ for (const f of variantFiles) {
     throw new Error(`${f}: missing required keys "filename" and/or "tokens"`);
   }
 
+  // Type guards. The truthy check above accepts `filename: 123` (a number)
+  // and `tokens: "not an object"`, which would then crash deeper with raw
+  // TypeErrors from `.includes()` / `Object.keys` instead of our contract
+  // errors. yaml.parse will happily hand us those types from a malformed
+  // variant file, so guard at the boundary.
+  if (typeof variant.filename !== 'string' || variant.filename.length === 0) {
+    throw new Error(
+      `${f}: "filename" must be a non-empty string (got ${typeof variant.filename}). ` +
+        `Variant filenames must be plain JSON names under themes/.`
+    );
+  }
+  if (typeof variant.tokens !== 'object' || variant.tokens === null || Array.isArray(variant.tokens)) {
+    throw new Error(
+      `${f}: "tokens" must be a mapping of token-name → value (got ${
+        Array.isArray(variant.tokens) ? 'array' : typeof variant.tokens
+      }).`
+    );
+  }
+
   // Reject anything containing a path separator. Catches "sub/foo.json"
   // (which would have passed the containment check below) and absolute
   // paths like "/etc/passwd". On POSIX path.sep === '/' so the second
