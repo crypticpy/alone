@@ -47,7 +47,7 @@ Pure black (#000000) backgrounds cause halation—a glowing halo effect around b
 
 On calibrated OLED and miniLED displays, subtle color differences disappear. **Alone** ensures each syntax element has distinct L\* (perceptual lightness) values, computed in CIE L\*a\*b\* against the editor background `#0C0A09`:
 
-```
+```text
 L* 81  ████████████████████████████  Operators
 L* 75  █████████████████████████     Variables
 L* 73  ████████████████████████      Numbers
@@ -326,7 +326,7 @@ Key contrast ratios against the editor background (`#0C0A09`):
 | Strings   | `#9A8B60` | 5.9:1          | AA                |
 | Comments  | `#5C544A` | 2.7:1          | — (de-emphasized) |
 
-Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast formula. Comments intentionally use lower contrast to de-emphasize them. All primary code elements meet WCAG AA for normal text; six of eight clear AAA. Run `node scripts/verify-palette.mjs` to regenerate.
+Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast formula. Comments intentionally use lower contrast to de-emphasize them. All primary code elements meet WCAG AA for normal text; five of eight clear AAA. Run `node scripts/verify-palette.mjs` to regenerate.
 
 ### Astigmatism Considerations
 

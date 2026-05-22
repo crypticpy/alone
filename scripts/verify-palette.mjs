@@ -5,12 +5,13 @@
  * Loads themes/alone-color-theme.json (Standard) and checks:
  *
  *   1. L* ladder — every headline syntax role's L* descends in the
- *      documented order (monotonic). Adjacent gaps must be ≥ 4 L*
- *      except for the two pairs the README calls out as intentional
- *      (Types/Functions and Strings/Special), which are allowed at
- *      ≥ 3 because they're differentiated by font style and hue.
+ *      documented order (monotonic). Out-of-order pairs hard-fail.
+ *      Adjacent gaps below TIGHT_GAP_THRESHOLD (3 L*) emit a soft
+ *      warning rather than failing, because the warm-only palette
+ *      can't deliver large gaps across all ten tiers — the middle
+ *      runs in the ~3 L* range and relies on font style + hue.
  *   2. WCAG contrast ratios in README.md match computed values against
- *      the editor background #0C0A09 (within ±0.3).
+ *      the editor background #0C0A09 (within ±WCAG_TOLERANCE).
  *   3. No syntax-role hex falls in the blue/cyan band (B > R and B > G).
  *   4. Variant key parity — the three theme JSONs declare identical
  *      sets of `colors.*` keys and `semanticTokenColors.*` keys.
@@ -67,6 +68,16 @@ const BG = standard.colors['editor.background']; // #0C0A09
 const sem = standard.semanticTokenColors;
 const fg = (v) => (typeof v === 'string' ? v : v.foreground);
 
+// Punctuation isn't a semantic token; it's defined as a TextMate scope.
+// Look it up by its named block so a future palette edit can't drift past
+// this verifier silently.
+function tokenForegroundByName(theme, name) {
+  const entry = theme.tokenColors.find((t) => t.name === name);
+  const hex = entry?.settings?.foreground;
+  if (!hex) throw new Error(`tokenColors entry "${name}" not found or missing foreground`);
+  return hex;
+}
+
 // Order matches the README L* ladder (Types > Functions per the documented spec).
 const ROLES = {
   Operators:   fg(sem['operator']),
@@ -76,8 +87,8 @@ const ROLES = {
   Types:       fg(sem['type']),
   Functions:   fg(sem['function']),
   Strings:     fg(sem['string']),
-  Special:     fg(sem['decorator']),       // dusty rose, also regex
-  Punctuation: '#7A7268',                  // not a semantic token; pulled from tokenColors
+  Special:     fg(sem['decorator']),                          // dusty rose, also regex
+  Punctuation: tokenForegroundByName(standard, 'Punctuation'),
   Comments:    fg(sem['comment']),
 };
 
@@ -93,6 +104,7 @@ const ROLES = {
 // and hue for differentiation. The verifier exists to catch genuine
 // regressions, not to enforce an unphysical spacing.
 const TIGHT_GAP_THRESHOLD = 3.0;
+const WCAG_TOLERANCE = 0.05;
 
 const ladder = Object.entries(ROLES).map(([name, hex]) => ({
   name, hex, L: cielab_L(hex), contrast: contrastRatio(hex, BG),
@@ -140,9 +152,9 @@ console.log('  ─────────────────────�
 for (const [name, claimed] of Object.entries(README_CONTRAST)) {
   const row = ladder.find((r) => r.name === name);
   const delta = row.contrast - claimed;
-  const ok = Math.abs(delta) <= 0.3 ? '✓' : '✗';
+  const ok = Math.abs(delta) <= WCAG_TOLERANCE ? '✓' : '✗';
   console.log(`  ${name.padEnd(10)} ${row.contrast.toFixed(2).padStart(6)}    ${claimed.toFixed(1).padStart(4)}    ${delta >= 0 ? '+' : ''}${delta.toFixed(2)}  ${ok}`);
-  if (Math.abs(delta) > 0.3) failures++;
+  if (Math.abs(delta) > WCAG_TOLERANCE) failures++;
 }
 
 // ─── 3. No syntax-role hex in the blue/cyan band ─────────────────────
