@@ -30,37 +30,37 @@ Your eyes spend 20-30 minutes building dark adaptation. One bright blue highligh
 
 **Alone** uses only wavelengths above 575nm—amber, orange, gold, olive—the spectrum where rhodopsin absorption drops to near-zero. Your rod cells remain undisturbed. Your cone cells handle the reading. Your dark adaptation survives.
 
-| Wavelength | Color | Rod Impact | Our Usage |
-|------------|-------|------------|-----------|
-| 450-490nm | Blue | **Maximum** | ❌ Eliminated |
-| 490-520nm | Cyan | **Severe** | ❌ Eliminated |
-| 520-560nm | Green | Moderate | ⚠️ Avoided |
-| 560-580nm | Yellow-Green | Low | ✅ Strings (olive) |
-| 580-620nm | Amber/Orange | Minimal | ✅ Primary palette |
-| 620-700nm | Red | Near-zero | ✅ Errors only |
+| Wavelength | Color        | Rod Impact  | Our Usage          |
+| ---------- | ------------ | ----------- | ------------------ |
+| 450-490nm  | Blue         | **Maximum** | ❌ Eliminated      |
+| 490-520nm  | Cyan         | **Severe**  | ❌ Eliminated      |
+| 520-560nm  | Green        | Moderate    | ⚠️ Avoided         |
+| 560-580nm  | Yellow-Green | Low         | ✅ Strings (olive) |
+| 580-620nm  | Amber/Orange | Minimal     | ✅ Primary palette |
+| 620-700nm  | Red          | Near-zero   | ✅ Errors only     |
 
 ### Halation Reduction
 
 Pure black (#000000) backgrounds cause halation—a glowing halo effect around bright text, especially problematic for astigmatism. **Alone** uses #0C0A09, a near-black with warm undertones that reduces this effect while maintaining the dark aesthetic.
 
-### Lightness Spacing (L*)
+### Lightness Spacing (L\*)
 
-On calibrated OLED and miniLED displays, subtle color differences disappear. **Alone** ensures each syntax element has distinct L* (perceptual lightness) values:
+On calibrated OLED and miniLED displays, subtle color differences disappear. **Alone** ensures each syntax element has distinct L\* (perceptual lightness) values, computed in CIE L\*a\*b\* against the editor background `#0C0A09`:
 
-```
-L* 82  ████████████████████████████  Operators
-L* 78  █████████████████████████     Keywords (bold)
-L* 75  ████████████████████████      Variables
-L* 72  ███████████████████████       Numbers
+```text
+L* 81  ████████████████████████████  Operators
+L* 75  █████████████████████████     Variables
+L* 73  ████████████████████████      Numbers
+L* 68  █████████████████████         Keywords (bold)
 L* 65  ████████████████████          Types
-L* 64  ███████████████████           Functions
+L* 62  ███████████████████           Functions
 L* 58  █████████████████             Strings (italic)
-L* 55  ████████████████              Special
-L* 50  ██████████████                Punctuation
-L* 38  ██████████                    Comments (italic)
+L* 55  ████████████████              Special / regex
+L* 49  ██████████████                Punctuation
+L* 36  █████████                     Comments (italic)
 ```
 
-Minimum 6 L* units between adjacent syntax roles ensures distinguishability.
+The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 36) is a ~45-unit range. The largest gaps cluster at the top and bottom (Operators→Variables 5.9, Special→Punctuation 6.7, Punctuation→Comments 12.3); the middle tiers run in the ~3 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. Run `node scripts/verify-palette.mjs` to recompute these against the live theme files; the verifier hard-fails on out-of-order roles and warns on any adjacent gap below 3 L\*.
 
 ---
 
@@ -68,28 +68,32 @@ Minimum 6 L* units between adjacent syntax roles ensures distinguishability.
 
 ### Syntax Colors
 
-| Element | Color | Hex | Style |
-|---------|-------|-----|-------|
-| Comments | ![#5C544A](https://via.placeholder.com/15/5C544A/5C544A) | `#5C544A` | *Italic* |
-| Strings | ![#9A8B60](https://via.placeholder.com/15/9A8B60/9A8B60) | `#9A8B60` | *Italic* |
-| Numbers | ![#E0A850](https://via.placeholder.com/15/E0A850/E0A850) | `#E0A850` | Normal |
-| Keywords | ![#C8A040](https://via.placeholder.com/15/C8A040/C8A040) | `#C8A040` | **Bold** |
-| Functions | ![#B07850](https://via.placeholder.com/15/B07850/B07850) | `#B07850` | Normal |
-| Types | ![#9A8048](https://via.placeholder.com/15/9A8048/9A8048) | `#9A8048` | Normal |
-| Variables | ![#C4B8A4](https://via.placeholder.com/15/C4B8A4/C4B8A4) | `#C4B8A4` | Normal |
-| Operators | ![#D4C8B8](https://via.placeholder.com/15/D4C8B8/D4C8B8) | `#D4C8B8` | Normal |
-| Errors | ![#D46A66](https://via.placeholder.com/15/D46A66/D46A66) | `#D46A66` | **Bold** |
+| Element              | Color                                                    | Hex       | Style    |
+| -------------------- | -------------------------------------------------------- | --------- | -------- |
+| Operators            | ![#D4C8B8](https://via.placeholder.com/15/D4C8B8/D4C8B8) | `#D4C8B8` | Normal   |
+| Variables            | ![#C4B8A4](https://via.placeholder.com/15/C4B8A4/C4B8A4) | `#C4B8A4` | Normal   |
+| Numbers              | ![#E0A850](https://via.placeholder.com/15/E0A850/E0A850) | `#E0A850` | Normal   |
+| Keywords             | ![#C8A040](https://via.placeholder.com/15/C8A040/C8A040) | `#C8A040` | **Bold** |
+| Types                | ![#BC9858](https://via.placeholder.com/15/BC9858/BC9858) | `#BC9858` | Normal   |
+| Interface/Type-param | ![#BC9858](https://via.placeholder.com/15/BC9858/BC9858) | `#BC9858` | _Italic_ |
+| Functions            | ![#C08868](https://via.placeholder.com/15/C08868/C08868) | `#C08868` | Normal   |
+| Built-in funcs       | ![#C08868](https://via.placeholder.com/15/C08868/C08868) | `#C08868` | _Italic_ |
+| Strings              | ![#9A8B60](https://via.placeholder.com/15/9A8B60/9A8B60) | `#9A8B60` | _Italic_ |
+| Escapes              | ![#D4B088](https://via.placeholder.com/15/D4B088/D4B088) | `#D4B088` | **Bold** |
+| Regex / decorators   | ![#A87878](https://via.placeholder.com/15/A87878/A87878) | `#A87878` | _Italic_ |
+| Comments             | ![#5C544A](https://via.placeholder.com/15/5C544A/5C544A) | `#5C544A` | _Italic_ |
+| Errors               | ![#D46A66](https://via.placeholder.com/15/D46A66/D46A66) | `#D46A66` | **Bold** |
 
 ### Bracket Pair Colors
 
-Six warm variants for bracket colorization:
+Six warm variants for bracket colorization, ordered by perceptual lightness so **depth maps to dimness** — the deeper you nest, the dimmer the bracket:
 
-1. ![#D4A048](https://via.placeholder.com/15/D4A048/D4A048) Gold `#D4A048`
-2. ![#C89068](https://via.placeholder.com/15/C89068/C89068) Burnt Sienna `#C89068`
-3. ![#B8956E](https://via.placeholder.com/15/B8956E/B8956E) Tan `#B8956E`
-4. ![#A89860](https://via.placeholder.com/15/A89860/A89860) Olive `#A89860`
-5. ![#C4A078](https://via.placeholder.com/15/C4A078/C4A078) Wheat `#C4A078`
-6. ![#D4B088](https://via.placeholder.com/15/D4B088/D4B088) Pale Amber `#D4B088`
+1. ![#E0B868](https://via.placeholder.com/15/E0B868/E0B868) Bright Gold `#E0B868` &nbsp;(L\* ~78)
+2. ![#C89868](https://via.placeholder.com/15/C89868/C89868) Gold `#C89868` &nbsp;(L\* ~67)
+3. ![#B08458](https://via.placeholder.com/15/B08458/B08458) Amber-Brown `#B08458` &nbsp;(L\* ~58)
+4. ![#967048](https://via.placeholder.com/15/967048/967048) Umber `#967048` &nbsp;(L\* ~50)
+5. ![#7A5C3C](https://via.placeholder.com/15/7A5C3C/7A5C3C) Dark Umber `#7A5C3C` &nbsp;(L\* ~42)
+6. ![#604830](https://via.placeholder.com/15/604830/604830) Deep Brown `#604830` &nbsp;(L\* ~34)
 
 ### Background Hierarchy
 
@@ -142,12 +146,15 @@ cp -r alone ~/.vscode/extensions/
 ## Theme Variants
 
 ### Alone (Standard)
+
 The full-featured theme with balanced contrast for extended coding sessions.
 
 ### Alone Soft
+
 For **extreme dark adaptation**. All syntax colors reduced ~20% brightness, backgrounds slightly lifted to reduce contrast. Perfect for pitch-black rooms or users with high light sensitivity.
 
 ### Alone Focused
+
 For **maximum concentration**. UI chrome is muted—activity bar badges dimmed, sidebar de-emphasized, borders hidden. Syntax highlighting unchanged. Your code takes center stage.
 
 ---
@@ -157,17 +164,22 @@ For **maximum concentration**. UI chrome is muted—activity bar badges dimmed, 
 **Alone** includes custom styling for popular extensions:
 
 ### GitLens
+
 Git blame annotations styled with warm, subtle colors that don't distract from code.
 
 ### Error Lens
+
 Inline errors, warnings, and hints use the warm palette:
+
 - Errors: Warm red (`#D46A66`)
 - Warnings: Amber (`#D4A048`)
 - Info: Muted gold (`#B89860`)
 - Hints: Olive (`#9A8B60`)
 
 ### Indent Rainbow
+
 Add to your `settings.json` for warm-toned indent guides:
+
 ```json
 "indentRainbow.colors": [
   "rgba(212, 160, 72, 0.07)",
@@ -180,7 +192,9 @@ Add to your `settings.json` for warm-toned indent guides:
 ```
 
 ### Todo Tree
+
 Add to your `settings.json` for themed TODO highlights:
+
 ```json
 "todo-tree.highlights.customHighlight": {
   "TODO": { "foreground": "#D4A048", "background": "#D4A04820" },
@@ -227,7 +241,7 @@ For the full **Alone** experience, add these to your `settings.json`:
   "editor.renderWhitespace": "none",
   "editor.renderLineHighlight": "line",
   "editor.occurrencesHighlight": "singleFile",
-  
+
   // Semantic highlighting (recommended)
   "editor.semanticHighlighting.enabled": true,
 
@@ -265,12 +279,12 @@ For the full **Alone** experience, add these to your `settings.json`:
 
 Matching terminal themes are included in the `terminal/` directory:
 
-| Terminal | File | Installation |
-|----------|------|--------------|
-| **Kitty** | `terminal/alone.conf` | Copy to `~/.config/kitty/themes/` and `include themes/alone.conf` |
-| **iTerm2** | `terminal/alone.itermcolors` | Preferences → Profiles → Colors → Import |
-| **Alacritty** | `terminal/alone.toml` | Import in your `alacritty.toml` config |
-| **Windows Terminal** | `terminal/alone-windows-terminal.json` | Add scheme to `settings.json` |
+| Terminal             | File                                   | Installation                                                      |
+| -------------------- | -------------------------------------- | ----------------------------------------------------------------- |
+| **Kitty**            | `terminal/alone.conf`                  | Copy to `~/.config/kitty/themes/` and `include themes/alone.conf` |
+| **iTerm2**           | `terminal/alone.itermcolors`           | Preferences → Profiles → Colors → Import                          |
+| **Alacritty**        | `terminal/alone.toml`                  | Import in your `alacritty.toml` config                            |
+| **Windows Terminal** | `terminal/alone-windows-terminal.json` | Add scheme to `settings.json`                                     |
 
 All terminal themes use the same warm color palette with intentionally muted blue/cyan (replaced with warm grays).
 
@@ -301,22 +315,59 @@ See `samples/` directory for demo files showcasing syntax highlighting.
 
 Key contrast ratios against the editor background (`#0C0A09`):
 
-| Element | Color | Contrast Ratio | WCAG Level |
-|---------|-------|----------------|------------|
-| Variables | `#C4B8A4` | 9.2:1 | AAA |
-| Keywords | `#C8A040` | 6.8:1 | AA |
-| Functions | `#B07850` | 5.1:1 | AA |
-| Strings | `#9A8B60` | 4.8:1 | AA (Large) |
-| Comments | `#5C544A` | 2.9:1 | — |
+| Element   | Color     | Contrast Ratio | WCAG Level        |
+| --------- | --------- | -------------- | ----------------- |
+| Operators | `#D4C8B8` | 12.0:1         | AAA               |
+| Variables | `#C4B8A4` | 10.1:1         | AAA               |
+| Numbers   | `#E0A850` | 9.3:1          | AAA               |
+| Keywords  | `#C8A040` | 8.1:1          | AAA               |
+| Types     | `#BC9858` | 7.3:1          | AAA               |
+| Functions | `#C08868` | 6.6:1          | AA                |
+| Strings   | `#9A8B60` | 5.9:1          | AA                |
+| Comments  | `#5C544A` | 2.7:1          | — (de-emphasized) |
 
-Comments intentionally use lower contrast to de-emphasize. All primary code elements meet WCAG AA for normal text.
+Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast formula. Comments intentionally use lower contrast to de-emphasize them. All primary code elements meet WCAG AA for normal text; five of eight clear AAA. Run `node scripts/verify-palette.mjs` to regenerate.
 
 ### Astigmatism Considerations
 
 - Near-black background (#0C0A09) reduces halation vs pure black
 - Keywords use weight 450 (lighter bold) to reduce fringing
 - Warm desaturated palette minimizes chromatic aberration
+- Cursor uses mid-tier gold (`#D4A048`) rather than the brightest palette hex — a small bright point on near-black is a halation hotspot, so we keep it dimmer
 - **Alone Soft** variant available for users needing even lower contrast
+
+### Italic Fringing Tradeoff
+
+Italics provide cheap differentiation (strings, comments, interfaces, type parameters, `defaultLibrary`, regex) within the warm palette. But slanted edges in a monospace font can _increase_ fringing for astigmatic readers. If italics give you trouble, drop them via VS Code's `editor.tokenColorCustomizations`:
+
+```jsonc
+"editor.tokenColorCustomizations": {
+  "[Alone]": {
+    "textMateRules": [
+      { "scope": ["comment", "string", "markup.italic"], "settings": { "fontStyle": "" } }
+    ]
+  },
+  "[Alone Soft]": {
+    "textMateRules": [
+      { "scope": ["comment", "string", "markup.italic"], "settings": { "fontStyle": "" } }
+    ]
+  }
+},
+"editor.semanticTokenColorCustomizations": {
+  "[Alone][Alone Soft][Alone Focused]": {
+    "enabled": true,
+    "rules": {
+      "interface": { "italic": false },
+      "typeParameter": { "italic": false },
+      "namespace": { "italic": false },
+      "module": { "italic": false },
+      "*.defaultLibrary": { "italic": false }
+    }
+  }
+}
+```
+
+You keep the palette and the science; you just trade the font-style channel back for sharper edges.
 
 ---
 
@@ -364,4 +415,4 @@ MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
-*Code alone. Code in peace. Your eyes will thank you.*
+_Code alone. Code in peace. Your eyes will thank you._
