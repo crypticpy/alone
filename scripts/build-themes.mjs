@@ -39,7 +39,7 @@ const OUT = path.join(ROOT, 'themes');
 const TOKEN_RE = /\$\{([^}]+)\}/g;
 const BARE_TOKEN_RE = /^\$\{([^}]+)\}$/;
 
-function resolveValue(val, tokens, ctxPath) {
+function resolveValue(val, tokens, ctxPath, used) {
   if (typeof val !== 'string') return val;
   const bare = val.match(BARE_TOKEN_RE);
   if (bare) {
@@ -47,6 +47,7 @@ function resolveValue(val, tokens, ctxPath) {
     if (!(name in tokens)) {
       throw new Error(`unknown token "${name}" at ${ctxPath}`);
     }
+    used.add(name);
     return tokens[name];
   }
   if (val.includes('${')) {
@@ -54,23 +55,24 @@ function resolveValue(val, tokens, ctxPath) {
       if (!(name in tokens)) {
         throw new Error(`unknown token "${name}" in interpolation at ${ctxPath}`);
       }
+      used.add(name);
       return String(tokens[name]);
     });
   }
   return val;
 }
 
-function walk(node, tokens, pathArr = []) {
+function walk(node, tokens, used, pathArr = []) {
   if (node === null || node === undefined) return node;
   if (typeof node !== 'object') {
-    return resolveValue(node, tokens, pathArr.join('.'));
+    return resolveValue(node, tokens, pathArr.join('.'), used);
   }
   if (Array.isArray(node)) {
-    return node.map((item, i) => walk(item, tokens, [...pathArr, i]));
+    return node.map((item, i) => walk(item, tokens, used, [...pathArr, i]));
   }
   const out = {};
   for (const [k, v] of Object.entries(node)) {
-    out[k] = walk(v, tokens, [...pathArr, k]);
+    out[k] = walk(v, tokens, used, [...pathArr, k]);
   }
   return out;
 }
@@ -91,12 +93,44 @@ if (variantFiles.length === 0) {
   process.exit(1);
 }
 
+// Track filename → source variant yaml so we can fail fast on collisions.
+// Two variants writing to the same themes/<filename>.json would silently
+// race; ordering by readdir is not stable enough to call this "the user
+// intended the later one to win".
+const seenFilenames = new Map();
+
 for (const f of variantFiles) {
   const variant = loadYaml(path.join(variantsDir, f));
   if (!variant.filename || !variant.tokens) {
     throw new Error(`${f}: missing required keys "filename" and/or "tokens"`);
   }
-  const built = walk(base, variant.tokens);
+  if (seenFilenames.has(variant.filename)) {
+    const prior = seenFilenames.get(variant.filename);
+    throw new Error(
+      `${f}: filename "${variant.filename}" already used by ${prior}. ` +
+        `Each variant must produce a unique output JSON.`
+    );
+  }
+  seenFilenames.set(variant.filename, f);
+
+  // Resolve, tracking which tokens were actually referenced by base.yaml.
+  const used = new Set();
+  const built = walk(base, variant.tokens, used);
+
+  // Surface unused tokens — typo'd or stale declarations that silently ship
+  // wrong values when later edits add a reference under a slightly different
+  // name. Hard-fail rather than warn: a build that quietly drifts is exactly
+  // what this pipeline exists to prevent.
+  const declared = new Set(Object.keys(variant.tokens));
+  const unused = [...declared].filter((t) => !used.has(t));
+  if (unused.length > 0) {
+    throw new Error(
+      `${f}: ${unused.length} declared token(s) are not referenced by base.yaml ` +
+        `(typo or stale binding): ${unused.slice(0, 8).join(', ')}` +
+        (unused.length > 8 ? `, …(+${unused.length - 8} more)` : '')
+    );
+  }
+
   const outPath = path.join(OUT, variant.filename);
   // Match the snapshot format: 2-space indent, trailing newline.
   fs.writeFileSync(outPath, JSON.stringify(built, null, 2) + '\n');

@@ -1,4 +1,4 @@
-# Plan: v1.3+ theme family expansion (pipeline + four new variants)
+# Plan: v1.3+ theme family expansion (pipeline + five new variants)
 
 ## Summary
 
