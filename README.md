@@ -156,7 +156,7 @@ For the full **Alone** experience, add these to your `settings.json`:
   "workbench.list.smoothScrolling": true,
   "terminal.integrated.smoothScrolling": true,
 
-  // Reduce visual noise
+  // Reduce visual noise (minimap kept as a dim shape — no rendered characters)
   "editor.minimap.enabled": true,
   "editor.minimap.renderCharacters": false,
   "editor.minimap.scale": 1,
