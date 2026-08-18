@@ -1,0 +1,6 @@
+2026-08-18T01:30:12.004Z [INFO]  server listening on :3000
+2026-08-18T01:30:12.118Z [DEBUG] loaded 3 theme variants (alone, alone-soft, alone-focused)
+2026-08-18T01:30:14.902Z [WARN]  slow request GET /api/palette took 1843ms
+2026-08-18T01:30:15.007Z [ERROR] verify-palette: README tables out of date
+    at check (scripts/verify-palette.mjs:412:9)
+2026-08-18T01:30:15.010Z [INFO]  rebuild complete

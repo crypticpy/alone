@@ -6,3 +6,6 @@ Thumbs.db
 *.log
 *.zip
 .claude/
+
+# sample files for theme preview are tracked even though *.log is ignored
+!samples/demo.log

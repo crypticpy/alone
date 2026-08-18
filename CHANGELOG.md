@@ -22,6 +22,20 @@ The first palette change since 1.0. Everything below was made in `themes/_src/va
 - **ANSI blue and cyan.** Blue is now a warm gray `#9C948E` (was `#8B8178`, Lc 36 → 45 — `ls`, `grep`, `man` output on black is readable again) and cyan is the terracotta already used for functions, `#C08868` (was `#9A8B7A`). The two former slots were near-identical warm grays (ΔE2000 5.2, indistinguishable under CVD); every pair among the eight normal slots is now ≥ ΔE2000 10 (min 13.6). Bright slots follow: `#A89A8C→#B2AAA3`, `#B8A898→#CEA284`. Black/red/green/yellow/magenta unchanged. Kitty, iTerm2, Alacritty (normal + dim) and Windows Terminal files updated to match.
 - **`themes/_snapshot/`** stays as the immutable v1.2.0 reference; the pipeline test now checks structural coverage — every snapshot colour key, tokenColors rule (name/scope/fontStyle) and semantic selector is still present and styled the same, additions allowed — rather than hex equality.
 
+### Added — Scope coverage (all variants, no new hexes)
+
+New `tokenColors` rules and `semanticTokenColors` selectors in `themes/_src/base.yaml`, each bound to an existing role token so every variant inherits it and key parity holds:
+
+- **Diffs / patches**: `markup.inserted` / `markup.deleted` / `markup.changed` take the git-decoration added/deleted/modified colours; `meta.diff.header` (`---`/`+++`/`index`) in doc-comment gray; `meta.diff.range` (`@@ … @@`) in keyword gold, non-bold. `samples/demo.diff` added.
+- **Log files**: `token.info-token` / `token.warn-token` / `token.error-token` / `token.debug-token` take the debug-console info/warning/error/source colours (error bold). `samples/demo.log` added.
+- **Preprocessor**: `keyword.control.directive` + `punctuation.definition.directive` (so `#` is coloured with `include`/`define`) in keyword gold bold; `entity.name.function.preprocessor` / `entity.name.function.macro` in the macro colour, bold (matches Rust macros).
+- **ALL_CAPS constants**: `variable.other.constant`, `constant.other.caps`, `variable.other.enummember` in the constants colour (previously fell through to plain variables).
+- **Labels**: `entity.name.label`, `entity.name.goto-label` in the semantic `label` colour.
+- **Markdown strikethrough**: `markup.strikethrough` gets `strikethrough` + the deprecated gray.
+- **Support variables** (`document`, `window`, `process`, `console`…): `support.variable*` in the `defaultLibrary` colour, italic — same treatment as semantic `*.defaultLibrary`.
+- **Semantic selectors**: `selfParameter` / `clsParameter` (= `this`/`self`/`super`), `magicFunction` (= Python magic methods), `builtinConstant` and `boolean` (= number/boolean colour), `builtinType` (= `type.defaultLibrary`, italic), `lifetime`, `attribute`, `derive` (= Rust lifetime/attribute colours, italic), `formatSpecifier` (= f-string braces), `escapeSequence` (= escapes, bold), `event` (= property).
+- The pipeline test now checks that everything the v1.2.0 snapshot styled is still styled the same way (additions allowed, drops/restyles fail).
+
 ### Changed — Internal: verifier v2, tests, CI
 
 - **Verifier v2** (`scripts/verify-palette.mjs`). New checks alongside the L\* ladder, wavelength band, and key parity: an **APCA Lc** column and per-role floors (body 60 / syntax 40 / special 37 / punctuation 28 / comments 22, overridable per variant via `verify.apcaFloors` — Alone Soft declares a scaled set); **ΔE2000** on every tight ladder gap; a **colour-vision-deficiency** table (Viénot protan/deutan/tritan simulation) over the ten most confusable role pairs, passing on ΔE2000 ≥ 5 or a font-style difference; **ANSI** pairwise ΔE2000 among the eight normal terminal slots (≥ 10); and a **whole-theme wavelength scan** — every chromatic hex in every variant, not just the ten headline roles, must have a dominant wavelength ≥ 575 nm. The perceptual checks were introduced as warnings against the 1.3.1 palette (which missed several — comments Lc 16, ANSI blue/cyan ΔE 5.2, Variables/Parameter under CVD) and are hard failures from 2.0.0. Each check's severity is a one-line `POLICY` entry.
