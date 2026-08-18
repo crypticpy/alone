@@ -1,6 +1,5 @@
 node_modules/
 *.vsix
-!alone-*.vsix
 .vscode-test/
 .DS_Store
 Thumbs.db

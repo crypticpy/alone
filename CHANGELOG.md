@@ -5,6 +5,22 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-08-18
+
+### Changed — Packaging hygiene (no palette changes)
+
+The shipped `themes/*.json` files are semantically identical to v1.3.0 apart from a new `$schema` key. This release cleans up what goes into the VSIX and what the repo carries, ahead of Marketplace publication.
+
+- **`.vscodeignore` rewritten** so the VSIX ships only `package.json`, `README.md`, `CHANGELOG.md`, `LICENSE`, the icon, `themes/*.json`, and the `terminal/` configs. `scripts/`, `tests/`, `docs/`, `samples/`, `themes/_src/`, `themes/_snapshot/`, `.github/`, `.vscode/`, and `node_modules/` are excluded. Verify with `npx @vscode/vsce ls`.
+- **Committed VSIX files removed** (`alone-1.0.1.vsix`, `alone-1.1.0.vsix`). Packages are release artifacts, not source; `.gitignore` now ignores `*.vsix` unconditionally.
+- **`package.json` cleanup**: removed the Marketplace-only `__metadata` block and the `contributes.configurationDefaults["[*]"]` entry (empty and unused); added `"pricing": "Free"`; keywords retargeted to how people actually search (`dark theme`, `warm`, `amber`, `OLED`, `eye strain`, `low light`, `night`, `astigmatism`, `dark room`, `vision science`).
+- **`$schema: vscode://schemas/color-theme`** added to every generated theme via `themes/_src/base.yaml`, so editors validate and autocomplete the JSON. The `themes/_snapshot/` comparison strips this key before diffing (see `themes/_snapshot/README.md`).
+- **One-shot scripts archived**: `scripts/_extract-deltas.mjs` and `scripts/retune.mjs` moved to `scripts/archive/`. Neither is part of the build.
+- **Plans moved** from `plans/` to `docs/plans/`; the audit-remediation plan (`docs/plans/2026-08-18-audit-remediation.md`) added.
+- **README swatches fixed**: the Syntax Colors table and Bracket Pair list used `via.placeholder.com` images, which is dead — the swatch column has been removed and the tables now show plain hex values.
+
+---
+
 ## [1.3.0] - 2026-05-22
 
 ### Changed — Internal: theme variants now generated from a base + per-variant deltas pipeline

@@ -9,9 +9,11 @@ A regression baseline for the v1.3.0 pipeline conversion. The contract was: the 
 ```bash
 npm run build:themes
 for v in alone alone-soft alone-focused; do
-  diff <(jq -S . "themes/$v-color-theme.json") <(jq -S . "themes/_snapshot/$v-color-theme.json")
+  diff <(jq -S 'del(."$schema")' "themes/$v-color-theme.json") <(jq -S . "themes/_snapshot/$v-color-theme.json")
 done
 ```
+
+(The `$schema` key added in v1.3.1 is stripped before comparing — it is editor metadata, not palette.)
 
 On **palette-preserving** changes (refactors of `_src/`, token renames, shared-value extraction) the diff stays empty — useful as a sanity gate. On **intentional** palette changes (retunes, added scopes, fontStyle adjustments) the diff becomes non-empty for the affected keys; at that point the snapshot stops being a green/red gate for those keys and becomes a "what's changed since v1.2.0" diagnostic. That's the intended behavior — the snapshot is a fixed historical reference point, not a moving baseline.
 

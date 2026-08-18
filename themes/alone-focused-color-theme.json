@@ -1,4 +1,5 @@
 {
+  "$schema": "vscode://schemas/color-theme",
   "name": "Alone Focused",
   "type": "dark",
   "semanticHighlighting": true,
