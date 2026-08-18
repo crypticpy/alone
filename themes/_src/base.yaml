@@ -906,7 +906,7 @@ colors:
   editorHoverWidget.statusBarBackground: ${colors.editorHoverWidget.statusBarBackground}
   editorGhostText.foreground: ${colors.editorGhostText.foreground}
   editorGhostText.border: "#00000000"
-  editorGhostText.background: "#00000000"
+  editorGhostText.background: ${colors.editorGhostText.background}
   editorStickyScroll.background: ${colors.editorStickyScroll.background}
   editorStickyScrollHover.background: ${colors.editorStickyScrollHover.background}
   debugExceptionWidget.background: ${colors.debugExceptionWidget.background}
