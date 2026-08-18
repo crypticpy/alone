@@ -57,6 +57,11 @@
         "label": "Alone Focused",
         "uiTheme": "vs-dark",
         "path": "./themes/alone-focused-color-theme.json"
+      },
+      {
+        "label": "Alone Roman",
+        "uiTheme": "vs-dark",
+        "path": "./themes/alone-roman-color-theme.json"
       }
     ]
   },
