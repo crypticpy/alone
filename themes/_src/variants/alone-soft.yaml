@@ -8,6 +8,15 @@ display: Alone Soft
 filename: alone-soft-color-theme.json
 verify:
   wavelengthBand: warm
+  # Soft is deliberately ~0.7× the standard's contrast (extreme dark
+  # adaptation), so its APCA floors are scaled down from the verifier's
+  # defaults (body 60 / syntax 40 / special 37 / punctuation 28 / comments 22).
+  apcaFloors:
+    body: 43
+    syntax: 27
+    special: 24
+    punctuation: 18
+    comments: 17
 tokens:
   name: Alone Soft
   semanticTokenColors.variable: "#9D9383"

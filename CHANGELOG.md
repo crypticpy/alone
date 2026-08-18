@@ -5,6 +5,19 @@ All notable changes to the **Alone** theme will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed — Internal: verifier v2, tests, CI (no palette changes)
+
+- **Verifier v2** (`scripts/verify-palette.mjs`). New checks alongside the L\* ladder, wavelength band, and key parity: an **APCA Lc** column and per-role floors (body 60 / syntax 40 / special 37 / punctuation 28 / comments 22, overridable per variant via `verify.apcaFloors` — Alone Soft declares a scaled set); **ΔE2000** on every tight ladder gap; a **colour-vision-deficiency** table (Viénot protan/deutan/tritan simulation) over the ten most confusable role pairs, passing on ΔE2000 ≥ 5 or a font-style difference; **ANSI** pairwise ΔE2000 among the eight normal terminal slots (≥ 10); and a **whole-theme wavelength scan** — every chromatic hex in every variant, not just the ten headline roles, must have a dominant wavelength ≥ 575 nm. The new perceptual checks report as **warnings** in this release (the current palette misses several — comments Lc 16, ANSI blue/cyan ΔE 5.2, Variables/Parameter under CVD); they become hard failures with the 2.0.0 retune. Each check's severity is a one-line `POLICY` entry.
+- **README tables are now rendered by the verifier.** The L\* ladder, Syntax Colors table, bracket list, contrast table (now WCAG **and** APCA) and a new ANSI table live between `<!-- verify:<name>:start/end -->` markers; `node scripts/verify-palette.mjs --write-readme` re-renders them, and the default run fails on drift.
+- **Colour math extracted** to `scripts/lib/color.mjs` (sRGB/XYZ/Lab, WCAG, APCA 0.0.98G-4, CIEDE2000, CVD matrices, dominant wavelength) and the generator's substitution/validation rules to `scripts/lib/build.mjs`, so both are unit-testable. `build-themes.mjs` output is byte-identical.
+- **Tests** (`npm test`, `node:test`): colour-math sanity (21:1, L\* 100, APCA ±106/108, ΔE2000 red/green ≈ 86.6, sRGB primaries' λd), generator edge cases (bare vs interpolated tokens, unknown/unused tokens, non-object variant roots, path-escaping filenames), build determinism, committed-JSON freshness, `$schema` presence, v1.2.0 snapshot parity (skippable with `PALETTE_CHANGED=1`), and a verifier smoke run.
+- **CI** (`.github/workflows/ci.yml`): Node 20 + 22 — `npm ci` → build → `git diff --exit-code themes/` → verify → test → `vsce package` (VSIX uploaded as an artifact). Dependabot for npm and GitHub Actions, monthly.
+- `@vscode/vsce` added as a devDependency; `npm run package` builds the VSIX.
+
+---
+
 ## [1.3.1] - 2026-08-18
 
 ### Changed — Packaging hygiene (no palette changes)
