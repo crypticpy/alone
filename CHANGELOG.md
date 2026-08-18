@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **README tables are now rendered by the verifier.** The L\* ladder, Syntax Colors table, bracket list, contrast table (now WCAG **and** APCA) and a new ANSI table live between `<!-- verify:<name>:start/end -->` markers; `node scripts/verify-palette.mjs --write-readme` re-renders them, and the default run fails on drift.
 - **Colour math extracted** to `scripts/lib/color.mjs` (sRGB/XYZ/Lab, WCAG, APCA 0.0.98G-4, CIEDE2000, CVD matrices, dominant wavelength) and the generator's substitution/validation rules to `scripts/lib/build.mjs`, so both are unit-testable. `build-themes.mjs` output is byte-identical.
 - **Tests** (`npm test`, `node:test`): colour-math sanity (21:1, L\* 100, APCA ±106/108, ΔE2000 red/green ≈ 86.6, sRGB primaries' λd), generator edge cases (bare vs interpolated tokens, unknown/unused tokens, non-object variant roots, path-escaping filenames), build determinism, committed-JSON freshness, `$schema` presence, v1.2.0 snapshot parity (skippable with `PALETTE_CHANGED=1`), and a verifier smoke run.
-- **CI** (`.github/workflows/ci.yml`): Node 20 + 22 — `npm ci` → build → `git diff --exit-code themes/` → verify → test → `vsce package` (VSIX uploaded as an artifact). Dependabot for npm and GitHub Actions, monthly.
+- **CI** (`.github/workflows/ci.yml`): Node 22 + 24 — `npm ci` → build → `git diff --exit-code themes/` → verify → test → `vsce package` (VSIX uploaded as an artifact). Dependabot for npm and GitHub Actions, monthly.
 - `@vscode/vsce` added as a devDependency; `npm run package` builds the VSIX.
 
 ---
