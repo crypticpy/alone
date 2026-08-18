@@ -16,35 +16,35 @@ semanticTokenColors:
   variable.declaration: ${semanticTokenColors.variable.declaration}
   variable.defaultLibrary:
     foreground: ${semanticTokenColors.variable.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   parameter: ${semanticTokenColors.parameter}
   property: ${semanticTokenColors.property}
   property.readonly: ${semanticTokenColors.property.readonly}
   property.declaration: ${semanticTokenColors.property.declaration}
   property.defaultLibrary:
     foreground: ${semanticTokenColors.property.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   function: ${semanticTokenColors.function}
   function.declaration: ${semanticTokenColors.function.declaration}
   function.defaultLibrary:
     foreground: ${semanticTokenColors.function.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   method: ${semanticTokenColors.method}
   method.declaration: ${semanticTokenColors.method.declaration}
   method.defaultLibrary:
     foreground: ${semanticTokenColors.method.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   class: ${semanticTokenColors.class}
   class.declaration: ${semanticTokenColors.class.declaration}
   class.defaultLibrary:
     foreground: ${semanticTokenColors.class.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   interface:
     foreground: ${semanticTokenColors.interface.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   interface.declaration:
     foreground: ${semanticTokenColors.interface.declaration.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   enum: ${semanticTokenColors.enum}
   enumMember: ${semanticTokenColors.enumMember}
   struct: ${semanticTokenColors.struct}
@@ -52,16 +52,16 @@ semanticTokenColors:
   type.declaration: ${semanticTokenColors.type.declaration}
   type.defaultLibrary:
     foreground: ${semanticTokenColors.type.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   typeParameter:
     foreground: ${semanticTokenColors.typeParameter.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   namespace:
     foreground: ${semanticTokenColors.namespace.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   module:
     foreground: ${semanticTokenColors.module.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   macro: ${semanticTokenColors.macro}
   decorator: ${semanticTokenColors.decorator}
   label: ${semanticTokenColors.label}
@@ -70,14 +70,14 @@ semanticTokenColors:
     bold: true
   comment:
     foreground: ${semanticTokenColors.comment.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   string:
     foreground: ${semanticTokenColors.string.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   number: ${semanticTokenColors.number}
   regexp:
     foreground: ${semanticTokenColors.regexp.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   operator: ${semanticTokenColors.operator}
   "*.deprecated":
     strikethrough: true
@@ -85,32 +85,32 @@ semanticTokenColors:
   "*.modification":
     foreground: ${semanticTokenColors.*.modification.foreground}
   "*.async":
-    italic: true
+    italic: ${style.semanticItalic}
   # ── Coverage additions (2.0.0): every selector below is bound to an existing
   #    role token so all variants inherit it and key parity is unaffected. ──
   selfParameter:
     foreground: ${tokenColors.special_variables_this_self_super.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   clsParameter:
     foreground: ${tokenColors.special_variables_this_self_super.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   magicFunction:
     foreground: ${tokenColors.python_magic_methods.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   builtinConstant: ${tokenColors.boolean_null_constants.settings.foreground}
   boolean: ${tokenColors.boolean_null_constants.settings.foreground}
   builtinType:
     foreground: ${semanticTokenColors.type.defaultLibrary.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   lifetime:
     foreground: ${tokenColors.rust_lifetime.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   attribute:
     foreground: ${tokenColors.rust_attributes.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   derive:
     foreground: ${tokenColors.rust_attributes.settings.foreground}
-    italic: true
+    italic: ${style.semanticItalic}
   formatSpecifier: ${tokenColors.python_f_string_braces.settings.foreground}
   escapeSequence:
     foreground: ${tokenColors.escape_characters.settings.foreground}
@@ -124,7 +124,7 @@ tokenColors:
       - string.comment
     settings:
       foreground: ${tokenColors.comments.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Documentation Comments
     scope:
       - comment.block.documentation
@@ -132,7 +132,7 @@ tokenColors:
       - comment.block.documentation punctuation
     settings:
       foreground: ${tokenColors.documentation_comments.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Strings
     scope:
       - string
@@ -141,7 +141,7 @@ tokenColors:
       - punctuation.definition.string
     settings:
       foreground: ${tokenColors.strings.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Template String Expressions
     scope:
       - string.template punctuation.definition.template-expression
@@ -156,7 +156,7 @@ tokenColors:
       - punctuation.definition.character-class.regexp
     settings:
       foreground: ${tokenColors.regular_expressions.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Escape Characters
     scope:
       - constant.character.escape
@@ -313,7 +313,7 @@ tokenColors:
       - variable.language.special
     settings:
       foreground: ${tokenColors.special_variables_this_self_super.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Types & Classes
     scope:
       - entity.name.type
@@ -361,7 +361,7 @@ tokenColors:
       - punctuation.decorator
     settings:
       foreground: ${tokenColors.decorators_annotations.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Punctuation
     scope:
       - punctuation
@@ -401,7 +401,7 @@ tokenColors:
       - meta.attribute-with-value string
     settings:
       foreground: ${tokenColors.html_attribute_values.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: HTML Entities
     scope:
       - constant.character.entity
@@ -480,7 +480,7 @@ tokenColors:
       - string.quoted.double.json
     settings:
       foreground: ${tokenColors.json_string_values.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: YAML Keys
     scope:
       - entity.name.tag.yaml
@@ -493,7 +493,7 @@ tokenColors:
       - string.quoted.double.yaml
     settings:
       foreground: ${tokenColors.yaml_values.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: YAML Anchors & Aliases
     scope:
       - entity.name.type.anchor.yaml
@@ -547,14 +547,14 @@ tokenColors:
       - punctuation.definition.quote.begin.markdown
     settings:
       foreground: ${tokenColors.markdown_block_quote.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Python Docstrings
     scope:
       - string.quoted.docstring.multi.python
       - string.quoted.docstring.single.python
     settings:
       foreground: ${tokenColors.python_docstrings.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Python F-string Braces
     scope:
       - constant.character.format.placeholder.other.python
@@ -565,7 +565,7 @@ tokenColors:
       - support.function.magic.python
     settings:
       foreground: ${tokenColors.python_magic_methods.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Python Builtins
     scope:
       - support.function.builtin.python
@@ -578,7 +578,7 @@ tokenColors:
       - entity.name.type.lifetime.rust
     settings:
       foreground: ${tokenColors.rust_lifetime.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Rust Macros
     scope:
       - entity.name.function.macro.rust
@@ -591,7 +591,7 @@ tokenColors:
       - meta.attribute.rust
     settings:
       foreground: ${tokenColors.rust_attributes.settings.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
   - name: Go Package Names
     scope:
       - entity.name.package.go
@@ -732,7 +732,7 @@ tokenColors:
       - support.variable.object.process
     settings:
       foreground: ${semanticTokenColors.variable.defaultLibrary.foreground}
-      fontStyle: italic
+      fontStyle: ${style.italic}
 colors:
   foreground: ${colors.foreground}
   disabledForeground: ${colors.disabledForeground}

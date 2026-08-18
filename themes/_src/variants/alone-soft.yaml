@@ -18,6 +18,9 @@ verify:
     punctuation: 18
     comments: 17
 tokens:
+  # Font-style channel. Roman binds these to "" / false.
+  style.italic: italic
+  style.semanticItalic: true
   name: Alone Soft
   semanticTokenColors.variable: "#A0937B"
   semanticTokenColors.variable.readonly: "#A0937B"

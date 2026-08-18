@@ -132,6 +132,7 @@ Six warm variants for bracket colorization, ordered by perceptual lightness so *
    - **Alone** — The standard theme
    - **Alone Soft** — Dimmer variant for extreme dark adaptation
    - **Alone Focused** — Minimal UI for maximum focus
+   - **Alone Roman** — Standard palette, no italics (astigmatism / italic-averse)
 
 ### From VSIX (Recommended for Manual Install)
 
@@ -157,7 +158,7 @@ cp -r alone ~/.vscode/extensions/
 
 ## Theme Variants
 
-**Alone** is the headline family member — a **mesopic**-light theme tuned for the intermediate range where both rod and cone receptors contribute, typical of a dim-but-not-dark room. The two siblings below are positioned around it; further along the dark-adaptation continuum, the family has room to grow (see [Future Plans](CHANGELOG.md#future-plans)).
+**Alone** is the headline family member — a **mesopic**-light theme tuned for the intermediate range where both rod and cone receptors contribute, typical of a dim-but-not-dark room. The three siblings below are positioned around it; further along the dark-adaptation continuum, the family has room to grow (see [Future Plans](CHANGELOG.md#future-plans)).
 
 ### Alone (Standard) — _mesopic_
 
@@ -170,6 +171,10 @@ For **extreme dark adaptation**. All syntax colors reduced ~20% brightness, back
 ### Alone Focused
 
 For **maximum concentration**. UI chrome is muted—activity bar badges dimmed, sidebar de-emphasized, borders hidden. Syntax highlighting unchanged. Your code takes center stage.
+
+### Alone Roman
+
+The Standard palette with **no italics** — for astigmatic readers who find slanted monospace edges fringe, or anyone who simply dislikes italic code. Every rule that Standard sets in italic (comments, strings, docstrings, regex, decorators, interfaces, type parameters, namespaces, `*.defaultLibrary`, `*.async`, `this`/`self`) is upright here; the only italic left is Markdown `*emphasis*`, which is the document's own formatting. Bold keywords/escapes/errors are unchanged. Two hexes differ from Standard so the pairs that Standard tells apart with italics stay separable on colour alone under red-green colour-vision deficiency: strings `#9A8B60 → #9C8B4A` and `*.defaultLibrary` `#B08C50 → #AA884C` (both verified ΔE2000 ≥ 5 after protan/deutan simulation). What you give up is the italic-only distinctions — interfaces look like classes, library calls like local ones, async like sync.
 
 ---
 
@@ -373,36 +378,27 @@ Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast f
 
 ### Italic Fringing Tradeoff
 
-Italics provide cheap differentiation (strings, comments, interfaces, type parameters, `defaultLibrary`, regex) within the warm palette. But slanted edges in a monospace font can _increase_ fringing for astigmatic readers. If italics give you trouble, drop them via VS Code's `editor.tokenColorCustomizations`:
+Italics provide cheap differentiation (strings, comments, interfaces, type parameters, `defaultLibrary`, regex) within the warm palette. But slanted edges in a monospace font can _increase_ fringing for astigmatic readers. If italics give you trouble, pick **Alone Roman** — the same palette with the italic channel removed and two hexes adjusted so nothing that italics used to separate collapses. If you want to keep Soft or Focused and only drop a few italics, VS Code's per-theme overrides still work:
 
 ```jsonc
 "editor.tokenColorCustomizations": {
-  "[Alone]": {
-    "textMateRules": [
-      { "scope": ["comment", "string", "markup.italic"], "settings": { "fontStyle": "" } }
-    ]
-  },
   "[Alone Soft]": {
     "textMateRules": [
-      { "scope": ["comment", "string", "markup.italic"], "settings": { "fontStyle": "" } }
+      { "scope": ["comment", "string"], "settings": { "fontStyle": "" } }
     ]
   }
 },
 "editor.semanticTokenColorCustomizations": {
-  "[Alone][Alone Soft][Alone Focused]": {
+  "[Alone Soft]": {
     "enabled": true,
     "rules": {
       "interface": { "italic": false },
       "typeParameter": { "italic": false },
-      "namespace": { "italic": false },
-      "module": { "italic": false },
       "*.defaultLibrary": { "italic": false }
     }
   }
 }
 ```
-
-You keep the palette and the science; you just trade the font-style channel back for sharper edges.
 
 ---
 
@@ -437,7 +433,7 @@ The shipped `themes/*.json` files are **generated**. Don't edit them directly �
 The source of truth lives under `themes/_src/`:
 
 - **`themes/_src/base.yaml`** — the structural skeleton. Every key the variants share (shape, scopes, font styles, and any hex that happens to be identical across all variants) lives here as a literal. Every leaf that varies across variants is written as `${token.name}`.
-- **`themes/_src/variants/<name>.yaml`** — per-variant bindings: `display`, `filename`, a `verify` block (which wavelength band the variant should pass and whether it's the "standard" used for the L\* ladder / README WCAG checks), and a `tokens:` block supplying the hex/alpha values for that variant's `${token.name}` references.
+- **`themes/_src/variants/<name>.yaml`** — per-variant bindings: `display`, `filename`, a `verify` block (which wavelength band the variant should pass and whether it's the "standard" used for the L\* ladder / README WCAG checks), and a `tokens:` block supplying the hex/alpha values for that variant's `${token.name}` references — plus the two font-style tokens `style.italic` (`italic` or `""`) and `style.semanticItalic` (`true`/`false`) that Alone Roman binds to "off".
 
 The scripts:
 

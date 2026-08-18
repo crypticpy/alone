@@ -9,6 +9,9 @@ filename: alone-focused-color-theme.json
 verify:
   wavelengthBand: warm
 tokens:
+  # Font-style channel. Roman binds these to "" / false.
+  style.italic: italic
+  style.semanticItalic: true
   name: Alone Focused
   semanticTokenColors.variable: "#C8B89A"
   semanticTokenColors.variable.readonly: "#C8B89A"

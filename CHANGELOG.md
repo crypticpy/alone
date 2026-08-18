@@ -22,6 +22,10 @@ The first palette change since 1.0. Everything below was made in `themes/_src/va
 - **ANSI blue and cyan.** Blue is now a warm gray `#9C948E` (was `#8B8178`, Lc 36 → 45 — `ls`, `grep`, `man` output on black is readable again) and cyan is the terracotta already used for functions, `#C08868` (was `#9A8B7A`). The two former slots were near-identical warm grays (ΔE2000 5.2, indistinguishable under CVD); every pair among the eight normal slots is now ≥ ΔE2000 10 (min 13.6). Bright slots follow: `#A89A8C→#B2AAA3`, `#B8A898→#CEA284`. Black/red/green/yellow/magenta unchanged. Kitty, iTerm2, Alacritty (normal + dim) and Windows Terminal files updated to match.
 - **`themes/_snapshot/`** stays as the immutable v1.2.0 reference; the pipeline test now checks structural coverage — every snapshot colour key, tokenColors rule (name/scope/fontStyle) and semantic selector is still present and styled the same, additions allowed — rather than hex equality.
 
+### Added — Alone Roman variant
+
+- **`Alone Roman`** (`themes/alone-roman-color-theme.json`): the Standard palette with the italic channel removed. `base.yaml` now routes every syntax italic through two tokens — `style.italic` (tokenColors `fontStyle`) and `style.semanticItalic` (semantic `italic:`) — which Alone / Soft / Focused bind to `italic` / `true` and Roman to `""` / `false`. Markdown `*emphasis*` stays italic in every variant (document formatting, not syntax styling). Two hexes differ from Standard so the pairs Standard separates by italics stay separable on colour alone under red-green CVD: strings `#9A8B60 → #9C8B4A` (vs functions, protan/deutan ΔE2000 5.5) and `*.defaultLibrary` `#B08C50 → #AA884C` (vs types, 5.4). The verifier runs every check on Roman like any other variant; the L\* ladder reference stays Standard.
+
 ### Added — Scope coverage (all variants, no new hexes)
 
 New `tokenColors` rules and `semanticTokenColors` selectors in `themes/_src/base.yaml`, each bound to an existing role token so every variant inherits it and key parity holds:
