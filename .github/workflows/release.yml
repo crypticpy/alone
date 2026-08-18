@@ -1,0 +1,136 @@
+name: Release
+
+# Tag-driven release: `git tag v2.0.0 && git push origin v2.0.0`
+#   build       → verify → test → package the VSIX → GitHub Release (tags only)
+#   marketplace → publish that VSIX to the VS Code Marketplace (VSCE_PAT)
+#   open-vsx    → publish the same VSIX to Open VSX (OVSX_PAT)
+# The two registry jobs are independent, so if one fails (outage, expired
+# token) "Re-run failed jobs" retries only that one — the Marketplace rejects
+# a version that is already published, so re-running a combined job could
+# never repair a half-finished release. A publish job is skipped when its
+# secret is absent, so a workflow_dispatch run on a fork or before the
+# accounts exist still produces a Release + VSIX. See docs/PUBLISHING.md.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to Marketplace / Open VSX (needs secrets)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: verify · package · release
+    runs-on: ubuntu-latest
+    outputs:
+      vsix: ${{ steps.pkg.outputs.vsix }}
+      publish: ${{ steps.flags.outputs.publish }}
+      has_vsce_pat: ${{ steps.flags.outputs.has_vsce_pat }}
+      has_ovsx_pat: ${{ steps.flags.outputs.has_ovsx_pat }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tag must match package.json version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::tag v$tag does not match package.json version $pkg"; exit 1
+          fi
+
+      - name: Build · verify · palette PNGs · test
+        run: npm run check && npm test
+
+      - name: Package VSIX
+        id: pkg
+        run: |
+          npx vsce package --out "alone-$(node -p "require('./package.json').version").vsix"
+          echo "vsix=$(ls alone-*.vsix)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: vsix
+          path: ${{ steps.pkg.outputs.vsix }}
+          if-no-files-found: error
+
+      - name: GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Idempotent so a re-run of this job after a downstream failure succeeds.
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" \
+              --title "Alone $GITHUB_REF_NAME" \
+              --notes "See [CHANGELOG.md](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md) for details." \
+              --verify-tag
+          fi
+
+      - name: Publish flags
+        id: flags
+        # `secrets` is not available in a job-level `if`, so surface presence as
+        # outputs (booleans only — no secret material crosses the job boundary).
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+          DO_PUBLISH: ${{ startsWith(github.ref, 'refs/tags/v') || inputs.publish == true }}
+        run: |
+          {
+            echo "publish=$DO_PUBLISH"
+            echo "has_vsce_pat=$([ -n "$VSCE_PAT" ] && echo true || echo false)"
+            echo "has_ovsx_pat=$([ -n "$OVSX_PAT" ] && echo true || echo false)"
+          } >> "$GITHUB_OUTPUT"
+
+  marketplace:
+    name: publish · VS Code Marketplace
+    needs: build
+    if: needs.build.outputs.publish == 'true' && needs.build.outputs.has_vsce_pat == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: vsix
+      - name: vsce publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish --packagePath "${{ needs.build.outputs.vsix }}"
+
+  open-vsx:
+    name: publish · Open VSX
+    needs: build
+    if: needs.build.outputs.publish == 'true' && needs.build.outputs.has_ovsx_pat == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v8
+        with:
+          name: vsix
+      - name: ovsx publish
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx@1 publish "${{ needs.build.outputs.vsix }}" --pat "$OVSX_PAT"

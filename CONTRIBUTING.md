@@ -29,7 +29,8 @@ The shipped `themes/*.json` files are **generated**. Don't edit them directly �
 npm ci
 npm run build:themes                            # regenerate themes/*.json from _src/
 npm run verify                                  # L* ladder, APCA floors, CVD + ANSI ΔE2000, wavelength scan, key parity, README tables
-npm run check                                   # both, in sequence
+npm run check                                   # build + verify + palette-PNG freshness
+npm run render:palette                          # regenerate images/palette-*.png after a palette change
 npm test                                        # node --test tests/
 node scripts/verify-palette.mjs --write-readme  # re-render the verifier-owned README tables after a palette change
 npx @vscode/vsce package                        # build the VSIX locally
@@ -45,6 +46,7 @@ npx @vscode/vsce package                        # build the VSIX locally
 - **ANSI** — the eight normal terminal slots pairwise ΔE2000 ≥ 10.
 - **Wavelength** — two parts. The ten ladder roles must pass the variant's declared band (`warm` = no blue/cyan hex). Separately, *every* chromatic hex in the theme — UI chrome, terminal, everything — must have a dominant wavelength ≥ 575 nm (`SCAN_MIN_NM`); neutrals below the chroma threshold are skipped. Note the whole-theme scan does not apply the declared band: a narrower band (a future `red-only` variant, say) constrains the ten roles, not the rest of the theme.
 - **Parity** — every variant has exactly the same keys, rules and selectors as every other.
+- **Palette PNGs** — `images/palette-*.png` must match what `scripts/render-palette.mjs` produces (`--check`).
 - **README** — the tables between `<!-- verify:<name>:start/end -->` markers must match what the palette produces.
 
 The header of the script explains the policy: since 2.0.0 every check is a hard failure. If you are deliberately moving the palette, demote the affected check to `warn` in the same PR that changes the palette and restore it before merge — do not add environment overrides.
@@ -53,7 +55,7 @@ The header of the script explains the policy: since 2.0.0 every check is a hard 
 
 1. Edit the hex in `themes/_src/variants/<name>.yaml` (or `base.yaml` if it is shared by every variant).
 2. `npm run check` — read the verifier output; fix any failure rather than relaxing the threshold.
-3. `node scripts/verify-palette.mjs --write-readme` and commit the README diff along with the regenerated `themes/*.json`.
+3. `node scripts/verify-palette.mjs --write-readme` and `npm run render:palette`; commit the README diff and `images/palette-*.png` along with the regenerated `themes/*.json`.
 4. If you touched an ANSI slot, mirror it in the four `terminal/` files (the README ANSI table is the reference).
 5. Note the change under `## [Unreleased]` in `CHANGELOG.md`. Visible look changes are a minor/major bump; fixes that don't change rendered colours are patch.
 
@@ -74,3 +76,7 @@ Edit `base.yaml` only. Bind the new rule to an existing role token (`${tokenColo
 - Conventional commit prefixes: `feat:`, `fix:`, `docs:`, `test:`, `chore:`, `refactor:`.
 - `npm run check && npm test` green locally; CI runs the same plus `git diff --exit-code themes/` (committed JSON must be what the build produces) and a `vsce package` dry run on Node 22 and 24.
 - Keep generated JSON, README tables and CHANGELOG in the same PR as the palette change that caused them.
+
+## Releasing
+
+See [docs/PUBLISHING.md](docs/PUBLISHING.md): bump `version`, move CHANGELOG entries out of `[Unreleased]`, merge, tag `vX.Y.Z` — the release workflow packages, creates the GitHub Release and publishes to the Marketplace and Open VSX.

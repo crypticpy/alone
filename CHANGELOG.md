@@ -49,6 +49,13 @@ New `tokenColors` rules and `semanticTokenColors` selectors in `themes/_src/base
 - **FAQ** rewritten ("Why no blue or cyan?", new "Does it protect my night vision?" and "Is it colour-blind safe?").
 - **`CONTRIBUTING.md`** added; the "Building the Themes (Contributors)" section moves there and grows into layout, verifier contract, palette-change and new-variant procedures. `package.json` description no longer claims dark-adaptation protection.
 
+### Added — Release pipeline, palette images, publishing guide
+
+- **`.github/workflows/release.yml`**: on a `v*` tag — tag/version match check → `npm run check && npm test` → `vsce package` → GitHub Release with the VSIX, then two independent publish jobs, `vsce publish` (`VSCE_PAT`) and `ovsx publish` (`OVSX_PAT`), so a failed registry can be re-run alone; a publish job skips when its secret is absent, and `workflow_dispatch` gives a dry run. CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-artifact@v7`.
+- **`scripts/render-palette.mjs`** (`npm run render:palette`): dependency-free PNG palette strips per variant (`images/palette-*.png` — ladder with hex + L\*, bracket pairs, ANSI slots) shown in the README; `--check` runs in `npm run check`, CI and a new test. README images are excluded from the VSIX (`vsce` serves them from the repository).
+- **`scripts/capture-screenshots.sh`**: reproducible macOS editor screenshots per variant (throwaway VS Code profile, recommended settings, `samples/demo.tsx`); README carries a labelled slot until they are captured.
+- **`docs/PUBLISHING.md`**: Marketplace publisher + Azure DevOps PAT, Open VSX namespace/token, repository secrets, first-publish smoke test, screenshots, badges, troubleshooting.
+
 ### Changed — Internal: verifier v2, tests, CI
 
 - **Verifier v2** (`scripts/verify-palette.mjs`). New checks alongside the L\* ladder, wavelength band, and key parity: an **APCA Lc** column and per-role floors (body 60 / syntax 40 / special 37 / punctuation 28 / comments 22, overridable per variant via `verify.apcaFloors` — Alone Soft declares a scaled set); **ΔE2000** on every tight ladder gap; a **colour-vision-deficiency** table (Viénot protan/deutan/tritan simulation) over the ten most confusable role pairs, passing on ΔE2000 ≥ 5 or a font-style difference; **ANSI** pairwise ΔE2000 among the eight normal terminal slots (≥ 10); and a **whole-theme wavelength scan** — every chromatic hex in every variant, not just the ten headline roles, must have a dominant wavelength ≥ 575 nm. The perceptual checks were introduced as warnings against the 1.3.1 palette (which missed several — comments Lc 16, ANSI blue/cyan ΔE 5.2, Variables/Parameter under CVD) and are hard failures from 2.0.0. Each check's severity is a one-line `POLICY` entry.
