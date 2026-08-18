@@ -1,8 +1,9 @@
 /**
  * End-to-end checks on the real _src tree: the build is deterministic, the
- * committed themes/*.json are what the build produces, and (unless the
- * palette has intentionally moved — PALETTE_CHANGED=1) each variant is still
- * value-identical to the immutable v1.2.0 snapshot apart from `$schema`.
+ * committed themes/*.json are what the build produces, and each variant still
+ * styles everything the immutable v1.2.0 snapshot styled (keys, tokenColors
+ * rules, semantic selectors, font styles) — values may move (2.0.0 retune)
+ * and coverage may grow, but nothing is silently dropped.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -51,14 +52,38 @@ test('every generated theme carries the color-theme $schema as its first key', (
   }
 });
 
-test('v1.2.0 snapshot parity (skip with PALETTE_CHANGED=1 on intentional palette changes)', { skip: process.env.PALETTE_CHANGED === '1' }, () => {
+test('v1.2.0 snapshot structural coverage (nothing the snapshot styled is dropped or restyled)', () => {
+  // The palette was retuned in 2.0.0, so hex values legitimately differ from
+  // the immutable v1.2.0 snapshot. What must NOT drift silently is that everything the snapshot
+  // styled is still styled the same way: every colour key still present,
+  // every tokenColors rule still present with the same scopes and fontStyle,
+  // every semanticTokenColors selector still present with the same font
+  // style. New keys/rules/selectors are allowed (additions only).
+  const STYLE_FLAGS = ['italic', 'bold', 'underline', 'strikethrough'];
+  const shape = (theme) => ({
+    colors: new Set(Object.keys(theme.colors)),
+    tokenColors: new Map(theme.tokenColors.map((r) => [
+      r.name, JSON.stringify({ scope: r.scope, fontStyle: r.settings?.fontStyle ?? null }),
+    ])),
+    // Semantic entries carry style as boolean flags (italic/bold/underline/
+    // strikethrough), not a fontStyle string.
+    semantic: new Map(Object.entries(theme.semanticTokenColors).map(([k, v]) => [
+      k, typeof v === 'string' ? '' : STYLE_FLAGS.filter((f) => v[f] === true).join(' '),
+    ])),
+  });
   for (const { f, doc } of variants) {
     const snapPath = path.join(SNAPSHOT, doc.filename);
     if (!fs.existsSync(snapPath)) continue; // variants added after v1.2.0 have no snapshot
-    const built = buildTheme(base, doc, f);
-    delete built.$schema;
-    const snap = JSON.parse(fs.readFileSync(snapPath, 'utf8'));
-    assert.deepEqual(built, snap, `${doc.filename} diverges from themes/_snapshot (intentional? set PALETTE_CHANGED=1)`);
+    const built = shape(buildTheme(base, doc, f));
+    const snap = shape(JSON.parse(fs.readFileSync(snapPath, 'utf8')));
+    for (const k of snap.colors) assert.ok(built.colors.has(k), `${doc.filename}: colour key "${k}" dropped since v1.2.0`);
+    for (const [name, sig] of snap.tokenColors) {
+      assert.equal(built.tokenColors.get(name), sig, `${doc.filename}: tokenColors rule "${name}" dropped or restyled since v1.2.0`);
+    }
+    for (const [sel, style] of snap.semantic) {
+      assert.ok(built.semantic.has(sel), `${doc.filename}: semantic selector "${sel}" dropped since v1.2.0`);
+      assert.equal(built.semantic.get(sel), style, `${doc.filename}: semantic selector "${sel}" font style changed since v1.2.0`);
+    }
   }
 });
 

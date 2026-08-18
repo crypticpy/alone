@@ -5,8 +5,8 @@
  * Discovers every variant under themes/_src/variants/*.yaml, loads the
  * corresponding built JSON from themes/, and runs these checks. Each check
  * has a severity in POLICY below — `fail` exits non-zero, `warn` is reported
- * but does not fail the run. (v2 introduced the perceptual checks as
- * warnings; they flip to `fail` once the palette meets them.)
+ * but does not fail the run. Since the 2.0.0 retune every check is `fail`;
+ * demote one to `warn` only while a deliberate palette change is in flight.
  *
  *   1. L* ladder (standard variant) — the ten headline roles descend in the
  *      documented order. Out-of-order → fail. Adjacent gaps below
@@ -56,15 +56,16 @@ const README = path.join(ROOT, 'README.md');
 const WRITE_README = process.argv.includes('--write-readme');
 
 // ─── Policy & thresholds ─────────────────────────────────────────────
-// Severity per check. Flip a `warn` to `fail` once the palette meets it.
+// Severity per check. All hard since 2.0.0; demote to `warn` only while a
+// deliberate palette change is in flight.
 const POLICY = {
   ladderOrder: 'fail',
-  tightGap: 'warn',
-  apca: 'warn',
-  cvd: 'warn',
-  ansi: 'warn',
+  tightGap: 'fail',
+  apca: 'fail',
+  cvd: 'fail',
+  ansi: 'fail',
   wavelengthBand: 'fail',
-  wavelengthScan: 'warn',
+  wavelengthScan: 'fail',
   parity: 'fail',
   readme: 'fail',
 };
