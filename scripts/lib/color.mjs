@@ -236,7 +236,10 @@ export function dominantWavelength(hex) {
     const t = ((x1 - WHITE_XY[0]) * ey - (y1 - WHITE_XY[1]) * ex) / den;
     const u = ((x1 - WHITE_XY[0]) * dy - (y1 - WHITE_XY[1]) * dx) / den;
     if (t > 0 && u >= 0 && u <= 1) {
-      best = { lambda: l1 + u * (l2 - l1), purity: 1 / t };
+      // Excitation purity = |WC| / |WS|. Every sRGB colour lies inside the
+      // locus (t ≥ 1), so this is ≤ 1 up to float noise; clamp so callers
+      // can rely on the textbook [0, 1] range.
+      best = { lambda: l1 + u * (l2 - l1), purity: Math.min(1, 1 / t) };
     }
   }
   return best ? { lambda: Math.round(best.lambda), purity: best.purity } : { lambda: NaN, purity: NaN };
