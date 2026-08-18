@@ -96,7 +96,43 @@
     },
     "*.async": {
       "italic": true
-    }
+    },
+    "selfParameter": {
+      "foreground": "#8D7040",
+      "italic": true
+    },
+    "clsParameter": {
+      "foreground": "#8D7040",
+      "italic": true
+    },
+    "magicFunction": {
+      "foreground": "#866060",
+      "italic": true
+    },
+    "builtinConstant": "#B38640",
+    "boolean": "#B38640",
+    "builtinType": {
+      "foreground": "#967946",
+      "italic": true
+    },
+    "lifetime": {
+      "foreground": "#866060",
+      "italic": true
+    },
+    "attribute": {
+      "foreground": "#866060",
+      "italic": true
+    },
+    "derive": {
+      "foreground": "#866060",
+      "italic": true
+    },
+    "formatSpecifier": "#9D8060",
+    "escapeSequence": {
+      "foreground": "#AA8D6D",
+      "bold": true
+    },
+    "event": "#A0937B"
   },
   "tokenColors": [
     {
@@ -901,6 +937,168 @@
       "settings": {
         "foreground": "#645B4E",
         "fontStyle": "strikethrough"
+      }
+    },
+    {
+      "name": "Diff Inserted",
+      "scope": [
+        "markup.inserted",
+        "markup.inserted.diff",
+        "punctuation.definition.inserted.diff"
+      ],
+      "settings": {
+        "foreground": "#7B6F4D"
+      }
+    },
+    {
+      "name": "Diff Deleted",
+      "scope": [
+        "markup.deleted",
+        "markup.deleted.diff",
+        "punctuation.definition.deleted.diff"
+      ],
+      "settings": {
+        "foreground": "#934440"
+      }
+    },
+    {
+      "name": "Diff Changed",
+      "scope": [
+        "markup.changed",
+        "markup.changed.diff",
+        "punctuation.definition.changed.diff"
+      ],
+      "settings": {
+        "foreground": "#AA8039"
+      }
+    },
+    {
+      "name": "Diff Headers",
+      "scope": [
+        "meta.diff.header",
+        "meta.diff.header.from-file",
+        "meta.diff.header.to-file",
+        "meta.diff.index",
+        "punctuation.definition.from-file.diff",
+        "punctuation.definition.to-file.diff"
+      ],
+      "settings": {
+        "foreground": "#6B635A"
+      }
+    },
+    {
+      "name": "Diff Ranges",
+      "scope": [
+        "meta.diff.range",
+        "punctuation.definition.range.diff"
+      ],
+      "settings": {
+        "foreground": "#A08033",
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Log Info",
+      "scope": [
+        "token.info-token"
+      ],
+      "settings": {
+        "foreground": "#937A4D"
+      }
+    },
+    {
+      "name": "Log Warning",
+      "scope": [
+        "token.warn-token"
+      ],
+      "settings": {
+        "foreground": "#AA8039"
+      }
+    },
+    {
+      "name": "Log Error",
+      "scope": [
+        "token.error-token"
+      ],
+      "settings": {
+        "foreground": "#AA5552",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Log Debug",
+      "scope": [
+        "token.debug-token"
+      ],
+      "settings": {
+        "foreground": "#7D7360"
+      }
+    },
+    {
+      "name": "Preprocessor Directives",
+      "scope": [
+        "keyword.control.directive",
+        "punctuation.definition.directive"
+      ],
+      "settings": {
+        "foreground": "#A08033",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Preprocessor Macros",
+      "scope": [
+        "entity.name.function.preprocessor",
+        "entity.name.function.macro"
+      ],
+      "settings": {
+        "foreground": "#BA9340",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Constants (ALL_CAPS)",
+      "scope": [
+        "variable.other.constant",
+        "constant.other.caps",
+        "variable.other.enummember"
+      ],
+      "settings": {
+        "foreground": "#AA8660"
+      }
+    },
+    {
+      "name": "Labels",
+      "scope": [
+        "entity.name.label",
+        "entity.name.goto-label"
+      ],
+      "settings": {
+        "foreground": "#BA9340"
+      }
+    },
+    {
+      "name": "Markdown Strikethrough",
+      "scope": [
+        "markup.strikethrough",
+        "punctuation.definition.strikethrough.markdown"
+      ],
+      "settings": {
+        "foreground": "#645B4E",
+        "fontStyle": "strikethrough"
+      }
+    },
+    {
+      "name": "Support Variables (globals, DOM)",
+      "scope": [
+        "support.variable",
+        "support.variable.property",
+        "support.variable.dom",
+        "support.variable.object.process"
+      ],
+      "settings": {
+        "foreground": "#8D7040",
+        "fontStyle": "italic"
       }
     }
   ],

@@ -86,6 +86,36 @@ semanticTokenColors:
     foreground: ${semanticTokenColors.*.modification.foreground}
   "*.async":
     italic: true
+  # ── Coverage additions (2.0.0): every selector below is bound to an existing
+  #    role token so all variants inherit it and key parity is unaffected. ──
+  selfParameter:
+    foreground: ${tokenColors.special_variables_this_self_super.settings.foreground}
+    italic: true
+  clsParameter:
+    foreground: ${tokenColors.special_variables_this_self_super.settings.foreground}
+    italic: true
+  magicFunction:
+    foreground: ${tokenColors.python_magic_methods.settings.foreground}
+    italic: true
+  builtinConstant: ${tokenColors.boolean_null_constants.settings.foreground}
+  boolean: ${tokenColors.boolean_null_constants.settings.foreground}
+  builtinType:
+    foreground: ${semanticTokenColors.type.defaultLibrary.foreground}
+    italic: true
+  lifetime:
+    foreground: ${tokenColors.rust_lifetime.settings.foreground}
+    italic: true
+  attribute:
+    foreground: ${tokenColors.rust_attributes.settings.foreground}
+    italic: true
+  derive:
+    foreground: ${tokenColors.rust_attributes.settings.foreground}
+    italic: true
+  formatSpecifier: ${tokenColors.python_f_string_braces.settings.foreground}
+  escapeSequence:
+    foreground: ${tokenColors.escape_characters.settings.foreground}
+    bold: true
+  event: ${semanticTokenColors.property}
 tokenColors:
   - name: Comments
     scope:
@@ -599,6 +629,110 @@ tokenColors:
     settings:
       foreground: ${tokenColors.invalid_deprecated.settings.foreground}
       fontStyle: strikethrough
+  # ── Coverage additions (2.0.0): diffs, logs, preprocessor, constants,
+  #    labels, strikethrough, support variables. All bound to existing tokens. ──
+  - name: Diff Inserted
+    scope:
+      - markup.inserted
+      - markup.inserted.diff
+      - punctuation.definition.inserted.diff
+    settings:
+      foreground: ${colors.gitDecoration.addedResourceForeground}
+  - name: Diff Deleted
+    scope:
+      - markup.deleted
+      - markup.deleted.diff
+      - punctuation.definition.deleted.diff
+    settings:
+      foreground: ${colors.gitDecoration.deletedResourceForeground}
+  - name: Diff Changed
+    scope:
+      - markup.changed
+      - markup.changed.diff
+      - punctuation.definition.changed.diff
+    settings:
+      foreground: ${colors.gitDecoration.modifiedResourceForeground}
+  - name: Diff Headers
+    scope:
+      - meta.diff.header
+      - meta.diff.header.from-file
+      - meta.diff.header.to-file
+      - meta.diff.index
+      - punctuation.definition.from-file.diff
+      - punctuation.definition.to-file.diff
+    settings:
+      foreground: ${tokenColors.documentation_comments.settings.foreground}
+  - name: Diff Ranges
+    scope:
+      - meta.diff.range
+      - punctuation.definition.range.diff
+    settings:
+      foreground: ${tokenColors.keywords.settings.foreground}
+      fontStyle: ""
+  - name: Log Info
+    scope:
+      - token.info-token
+    settings:
+      foreground: ${colors.debugConsole.infoForeground}
+  - name: Log Warning
+    scope:
+      - token.warn-token
+    settings:
+      foreground: ${colors.debugConsole.warningForeground}
+  - name: Log Error
+    scope:
+      - token.error-token
+    settings:
+      foreground: ${colors.debugConsole.errorForeground}
+      fontStyle: bold
+  - name: Log Debug
+    scope:
+      - token.debug-token
+    settings:
+      foreground: ${colors.debugConsole.sourceForeground}
+  - name: Preprocessor Directives
+    scope:
+      - keyword.control.directive
+      - punctuation.definition.directive
+    settings:
+      foreground: ${tokenColors.keywords.settings.foreground}
+      fontStyle: bold
+  - name: Preprocessor Macros
+    scope:
+      - entity.name.function.preprocessor
+      - entity.name.function.macro
+    settings:
+      foreground: ${tokenColors.rust_macros.settings.foreground}
+      fontStyle: bold
+  - name: Constants (ALL_CAPS)
+    scope:
+      - variable.other.constant
+      - constant.other.caps
+      - variable.other.enummember
+    settings:
+      foreground: ${tokenColors.other_constants.settings.foreground}
+  - name: Labels
+    scope:
+      - entity.name.label
+      - entity.name.goto-label
+    settings:
+      foreground: ${semanticTokenColors.label}
+  - name: Markdown Strikethrough
+    scope:
+      - markup.strikethrough
+      - punctuation.definition.strikethrough.markdown
+    settings:
+      foreground: ${tokenColors.invalid_deprecated.settings.foreground}
+      fontStyle: strikethrough
+  - name: Support Variables (globals, DOM)
+    scope:
+      - support.variable
+      - support.variable.property
+      - support.variable.dom
+      - support.variable.object.process
+    settings:
+      foreground: ${semanticTokenColors.variable.defaultLibrary.foreground}
+      fontStyle: italic
 colors:
   foreground: ${colors.foreground}
   disabledForeground: ${colors.disabledForeground}

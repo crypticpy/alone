@@ -1,0 +1,13 @@
+diff --git a/src/palette.ts b/src/palette.ts
+index 3f2a1c0..9b7e4d2 100644
+--- a/src/palette.ts
++++ b/src/palette.ts
+@@ -12,7 +12,9 @@ export const COMMENTS = '#5C544A';
+-export const COMMENTS = '#5C544A';
++export const COMMENTS = '#6E665B'; // APCA Lc 23
+ export const KEYWORDS = '#C8A040';
+-export const ANSI_BLUE = '#8B8178';
+-export const ANSI_CYAN = '#9A8B7A';
++export const ANSI_BLUE = '#9C948E';
++export const ANSI_CYAN = '#C08868';
+ export const FOREGROUND = '#C8B89A';
