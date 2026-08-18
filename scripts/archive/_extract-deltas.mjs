@@ -34,7 +34,7 @@ import url from 'node:url';
 import YAML from 'yaml';
 
 const HERE = path.dirname(url.fileURLToPath(import.meta.url));
-const ROOT = path.join(HERE, '..');
+const ROOT = path.join(HERE, '..', '..'); // scripts/archive/ → repo root
 const SNAP = path.join(ROOT, 'themes', '_snapshot');
 const SRC = path.join(ROOT, 'themes', '_src');
 

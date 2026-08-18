@@ -18,7 +18,7 @@ import path from 'node:path';
 import url from 'node:url';
 
 const HERE = path.dirname(url.fileURLToPath(import.meta.url));
-const THEMES = path.join(HERE, '..', 'themes');
+const THEMES = path.join(HERE, '..', '..', 'themes'); // scripts/archive/ → repo root
 
 // ────────────────────────────────────────────────────────────────────
 // Palette deltas — see docs/plans/2026-05-21-theme-retune.md for rationale.
