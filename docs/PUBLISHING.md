@@ -6,10 +6,10 @@ Everything below the "Once" line is done once by the repository owner. After tha
 
 1. Bump `version` in `package.json` (and `package-lock.json`, `npm version --no-git-tag-version X.Y.Z` does both), move the `[Unreleased]` CHANGELOG entries under `## [X.Y.Z] - YYYY-MM-DD`, commit on `main` through a PR.
 2. `git tag vX.Y.Z && git push origin vX.Y.Z`.
-3. The workflow: checks the tag matches `package.json`, runs `npm run check && npm test`, packages `alone-X.Y.Z.vsix`, creates a GitHub Release with the VSIX attached, then publishes the same VSIX to the VS Code Marketplace (`VSCE_PAT`) and Open VSX (`OVSX_PAT`). Either publish step is skipped if its secret is missing, so the workflow is safe to run before the accounts exist.
+3. The workflow runs three jobs. `build` checks the tag matches `package.json`, runs `npm run check && npm test`, packages `alone-X.Y.Z.vsix` and creates a GitHub Release with the VSIX attached. `marketplace` and `open-vsx` then each publish that same VSIX to their registry (`VSCE_PAT` / `OVSX_PAT`). The two publish jobs are independent: if one fails (outage, expired token) use **Re-run failed jobs** and only that one runs again — the other registry, which already has the version, is left alone. A publish job is skipped when its secret is missing, so the workflow is safe to run before the accounts exist.
 4. Verify on the Marketplace page (a few minutes) and Open VSX (usually seconds).
 
-A dry run without publishing: **Actions → Release → Run workflow** with *publish* unchecked — produces the VSIX artifact and exercises everything except the two publish steps.
+A dry run without publishing: **Actions → Release → Run workflow** with *publish* unchecked — produces the VSIX artifact and exercises everything except the two publish jobs.
 
 ---
 

@@ -51,7 +51,7 @@ New `tokenColors` rules and `semanticTokenColors` selectors in `themes/_src/base
 
 ### Added — Release pipeline, palette images, publishing guide
 
-- **`.github/workflows/release.yml`**: on a `v*` tag — tag/version match check → `npm run check && npm test` → `vsce package` → GitHub Release with the VSIX → `vsce publish` (`VSCE_PAT`) → `ovsx publish` (`OVSX_PAT`); publish steps skip when a secret is absent, and `workflow_dispatch` gives a dry run. CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-artifact@v7`.
+- **`.github/workflows/release.yml`**: on a `v*` tag — tag/version match check → `npm run check && npm test` → `vsce package` → GitHub Release with the VSIX, then two independent publish jobs, `vsce publish` (`VSCE_PAT`) and `ovsx publish` (`OVSX_PAT`), so a failed registry can be re-run alone; a publish job skips when its secret is absent, and `workflow_dispatch` gives a dry run. CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-artifact@v7`.
 - **`scripts/render-palette.mjs`** (`npm run render:palette`): dependency-free PNG palette strips per variant (`images/palette-*.png` — ladder with hex + L\*, bracket pairs, ANSI slots) shown in the README; `--check` runs in `npm run check`, CI and a new test. README images are excluded from the VSIX (`vsce` serves them from the repository).
 - **`scripts/capture-screenshots.sh`**: reproducible macOS editor screenshots per variant (throwaway VS Code profile, recommended settings, `samples/demo.tsx`); README carries a labelled slot until they are captured.
 - **`docs/PUBLISHING.md`**: Marketplace publisher + Azure DevOps PAT, Open VSX namespace/token, repository secrets, first-publish smoke test, screenshots, badges, troubleshooting.
