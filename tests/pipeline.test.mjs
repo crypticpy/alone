@@ -59,13 +59,16 @@ test('v1.2.0 snapshot structural coverage (nothing the snapshot styled is droppe
   // every tokenColors rule still present with the same scopes and fontStyle,
   // every semanticTokenColors selector still present with the same font
   // style. New keys/rules/selectors are allowed (additions only).
+  const STYLE_FLAGS = ['italic', 'bold', 'underline', 'strikethrough'];
   const shape = (theme) => ({
     colors: new Set(Object.keys(theme.colors)),
     tokenColors: new Map(theme.tokenColors.map((r) => [
       r.name, JSON.stringify({ scope: r.scope, fontStyle: r.settings?.fontStyle ?? null }),
     ])),
+    // Semantic entries carry style as boolean flags (italic/bold/underline/
+    // strikethrough), not a fontStyle string.
     semantic: new Map(Object.entries(theme.semanticTokenColors).map(([k, v]) => [
-      k, typeof v === 'string' ? null : (v.fontStyle ?? null),
+      k, typeof v === 'string' ? '' : STYLE_FLAGS.filter((f) => v[f] === true).join(' '),
     ])),
   });
   for (const { f, doc } of variants) {
