@@ -4,7 +4,7 @@
 
 <!-- hero: images/hero.png — added with the release pipeline (see docs/PUBLISHING.md) -->
 
-Alone is a warm, low-luminance dark theme for people who code in dark rooms for hours. Every colour in it — syntax, UI chrome, terminal — has a dominant wavelength between 576 and 611 nm: gold, amber, olive, terracotta, dusty rose. There is no blue, no cyan, no purple, and no white text. Foregrounds sit well below the brightness of a typical dark theme, contrast is tuned with APCA rather than maxed out, and a verifier script fails the build if any of that drifts.
+Alone is a warm, low-luminance dark theme for people who code in dark rooms for hours. Every colour in it — syntax, UI chrome, terminal — has a dominant wavelength between 575 and 611 nm: gold, amber, olive, terracotta, dusty rose. There is no blue, no cyan, no purple, and no white text. Foregrounds sit well below the brightness of a typical dark theme, contrast is tuned with APCA rather than maxed out, and a verifier script fails the build if any of that drifts.
 
 It is not a night-vision instrument (see [What it does not do](#what-it-does-not-do)); it is a comfortable place to spend a long night.
 
@@ -397,7 +397,7 @@ APCA Lc ≥ 60 is the body-text target, ≥ 45 large text, ≥ 30 the floor for 
 
 ### Colour-vision deficiency
 
-A warm-only palette lives mostly on the red-green axis, which is exactly what protanopes and deuteranopes lose. So the verifier simulates protan and deutan vision for every variant and requires that ten role pairs that carry meaning (types vs functions, functions vs strings, keywords vs types, numbers vs keywords, strings vs special, errors vs functions/special, escapes vs variables, `defaultLibrary` vs types, variables vs parameters) stay at least ΔE2000 5 apart after simulation — or differ in font style. Alone Roman has no italic cue, so it passes on colour alone (that is why two of its hexes differ from Standard). ANSI slots must stay ≥ ΔE2000 10 apart pairwise. All four variants pass; the exact numbers are in the verifier's sections 4 and 5.
+A warm-only palette lives mostly on the red-green axis, which is exactly what protanopes and deuteranopes lose. So the verifier simulates protan and deutan vision for every variant and requires that ten role pairs that carry meaning (types vs functions, functions vs strings, keywords vs types, numbers vs keywords, strings vs special, errors vs functions/special, escapes vs variables, `defaultLibrary` vs types, variables vs parameters) stay at least ΔE2000 5 apart after simulation — or differ in font style. Alone Roman has no italic cue, so it passes on colour alone (that is why two of its hexes differ from Standard). The eight *normal* ANSI slots (0–7) must stay ≥ ΔE2000 10 apart pairwise; the bright slots (8–15) are deliberately the same hues one step lighter, so they are not held to that bound against their dim twins. All four variants pass; the exact numbers are in the verifier's sections 4 and 5.
 
 ### Astigmatism
 
@@ -461,7 +461,7 @@ Usually. Low text luminance and no blue are the two things that matter most for 
 
 ### Is it colour-blind safe?
 
-Every meaning-carrying colour pair is checked under simulated protanopia and deuteranopia in all four variants (ΔE2000 ≥ 5 or a font-style difference), and the terminal's sixteen ANSI slots stay ≥ ΔE2000 10 apart. Tritanopia is not a concern for a palette with no blue axis.
+For red-green deficiency, yes, and it is enforced: every meaning-carrying colour pair is checked under simulated protanopia and deuteranopia in all four variants (ΔE2000 ≥ 5 or a font-style difference), and the eight normal terminal slots stay ≥ ΔE2000 10 apart. Tritanopia is *not* simulated or enforced — a warm palette has little blue-yellow content for a tritanope to lose, but that also means some pairs (Types vs Functions, for example) sit closer under tritan simulation than the red-green threshold, and the bright ANSI slots are not checked against each other at all. If you have tritanopia, treat the theme as untested rather than verified.
 
 ---
 

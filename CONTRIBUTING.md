@@ -43,7 +43,7 @@ npx @vscode/vsce package                        # build the VSIX locally
 - **APCA floors** — identifiers ≥ 60, syntax ≥ 40, Special/Strings ≥ 37, punctuation ≥ 28, comments ≥ 22 (Alone Soft carries its own floors in its variant file).
 - **CVD** — the role pairs in `scripts/lib/theme-roles.mjs` must stay ΔE2000 ≥ 5 apart after protan and deutan simulation, or differ in font style. Alone Roman has no italic cue, so its pairs must pass on colour alone.
 - **ANSI** — the eight normal terminal slots pairwise ΔE2000 ≥ 10.
-- **Wavelength** — every hex in every variant must have a dominant wavelength inside the variant's declared band (or be a neutral).
+- **Wavelength** — two parts. The ten ladder roles must pass the variant's declared band (`warm` = no blue/cyan hex). Separately, *every* chromatic hex in the theme — UI chrome, terminal, everything — must have a dominant wavelength ≥ 575 nm (`SCAN_MIN_NM`); neutrals below the chroma threshold are skipped. Note the whole-theme scan does not apply the declared band: a narrower band (a future `red-only` variant, say) constrains the ten roles, not the rest of the theme.
 - **Parity** — every variant has exactly the same keys, rules and selectors as every other.
 - **README** — the tables between `<!-- verify:<name>:start/end -->` markers must match what the palette produces.
 
