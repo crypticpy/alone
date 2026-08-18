@@ -52,19 +52,19 @@ On calibrated OLED and miniLED displays, subtle color differences disappear. **A
 ```text
 L* 81  ███████████████████████████   Operators
 L* 75  █████████████████████████     Variables
-L* 73  ████████████████████████      Numbers
+L* 72  ████████████████████████      Numbers
 L* 68  ███████████████████████       Keywords (bold)
 L* 65  ██████████████████████        Types
 L* 61  ████████████████████          Functions
 L* 58  ███████████████████           Strings (italic)
 L* 55  ██████████████████            Special
-L* 48  ████████████████              Punctuation
-L* 36  ████████████                  Comments (italic)
+L* 49  ████████████████              Punctuation
+L* 44  ███████████████               Comments (italic)
 ```
 
 <!-- verify:ladder:end -->
 
-The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 36) is a ~45-unit range. The largest gaps cluster at the top and bottom (Operators→Variables 5.9, Special→Punctuation 6.7, Punctuation→Comments 12.3); the middle tiers run in the ~3 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. The ladder above is rendered by `scripts/verify-palette.mjs` from the live theme files; the verifier hard-fails on out-of-order roles and warns on any adjacent gap below 3 L\* (or ΔE2000 below 4).
+The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 44) is a ~37-unit range. The largest gaps sit at the top and bottom (Operators→Variables 5.8, Special→Punctuation 6.7, Punctuation→Comments 4.9); the middle tiers run in the 3–4 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. The ladder above is rendered by `scripts/verify-palette.mjs` from the live theme files; the verifier hard-fails on out-of-order roles and on any adjacent gap below 3 L\* or ΔE2000 below 4.
 
 ---
 
@@ -76,9 +76,9 @@ The ladder is monotonic descending. The warm-only palette can't deliver large ga
 
 | Element              | Hex       | Style              |
 | -------------------- | --------- | ------------------ |
-| Operators            | `#D4C8B8` | Normal             |
-| Variables            | `#C4B8A4` | Normal             |
-| Numbers              | `#E0A850` | Normal             |
+| Operators            | `#D8C8A8` | Normal             |
+| Variables            | `#C8B89A` | Normal             |
+| Numbers              | `#DEA64E` | Normal             |
 | Keywords             | `#C8A040` | **Bold**           |
 | Types                | `#BC9858` | Normal             |
 | Interface/Type-param | `#BC9858` | _Italic_           |
@@ -87,7 +87,7 @@ The ladder is monotonic descending. The warm-only palette can't deliver large ga
 | Strings              | `#9A8B60` | _Italic_           |
 | Escapes              | `#D4B088` | **Bold**           |
 | Regex / decorators   | `#A87878` | _Italic_           |
-| Comments             | `#5C544A` | _Italic_           |
+| Comments             | `#6E665B` | _Italic_           |
 | Errors               | `#D46A66` | **Bold** underline |
 
 <!-- verify:syntax-colors:end -->
@@ -300,7 +300,7 @@ Matching terminal themes are included in the `terminal/` directory:
 | **Alacritty**        | `terminal/alone.toml`                  | Import in your `alacritty.toml` config                            |
 | **Windows Terminal** | `terminal/alone-windows-terminal.json` | Add scheme to `settings.json`                                     |
 
-All terminal themes use the same warm color palette with intentionally muted blue/cyan (replaced with warm grays).
+All terminal themes use the same warm color palette. The blue and cyan slots carry no short-wavelength light: blue is a warm gray (`#9C948E`) and cyan is the terracotta used for functions (`#C08868`) — two hues a red-green-deficient reader can still tell apart (ΔE2000 ≥ 10 across all eight normal slots), instead of the two near-identical grays that shipped before 2.0.0. Programs that print blue-on-black (`ls`, `grep`, `man`) stay readable (blue Lc 45 against the terminal background).
 
 The sixteen ANSI slots (as shipped in the VS Code theme and mirrored in the terminal files):
 
@@ -308,14 +308,14 @@ The sixteen ANSI slots (as shipped in the VS Code theme and mirrored in the term
 
 | Slot    | Hex       | L\* | Bright slot   | Hex       | L\* |
 | ------- | --------- | --- | ------------- | --------- | --- |
-| Black   | `#0C0A09` | 3   | BrightBlack   | `#5C544A` | 36  |
+| Black   | `#0C0A09` | 3   | BrightBlack   | `#6E665B` | 44  |
 | Red     | `#B85450` | 48  | BrightRed     | `#D46A66` | 57  |
 | Green   | `#9A8B60` | 58  | BrightGreen   | `#C4B078` | 72  |
 | Yellow  | `#D4A048` | 69  | BrightYellow  | `#E8B850` | 77  |
-| Blue    | `#8B8178` | 55  | BrightBlue    | `#A89A8C` | 64  |
+| Blue    | `#9C948E` | 62  | BrightBlue    | `#B2AAA3` | 70  |
 | Magenta | `#A87878` | 55  | BrightMagenta | `#C89088` | 65  |
-| Cyan    | `#9A8B7A` | 59  | BrightCyan    | `#B8A898` | 70  |
-| White   | `#C4B8A4` | 75  | BrightWhite   | `#E8DCD0` | 88  |
+| Cyan    | `#C08868` | 61  | BrightCyan    | `#CEA284` | 70  |
+| White   | `#C8B89A` | 75  | BrightWhite   | `#EDDCC4` | 89  |
 
 <!-- verify:ansi:end -->
 
@@ -350,14 +350,14 @@ Key contrast ratios against the editor background (`#0C0A09`):
 
 | Element   | Color     | WCAG   | WCAG level | APCA Lc |
 | --------- | --------- | ------ | ---------- | ------- |
-| Operators | `#D4C8B8` | 12.0:1 | AAA        | 74      |
-| Variables | `#C4B8A4` | 10.1:1 | AAA        | 65      |
-| Numbers   | `#E0A850` | 9.3:1  | AAA        | 61      |
+| Operators | `#D8C8A8` | 12.0:1 | AAA        | 74      |
+| Variables | `#C8B89A` | 10.1:1 | AAA        | 65      |
+| Numbers   | `#DEA64E` | 9.1:1  | AAA        | 60      |
 | Keywords  | `#C8A040` | 8.1:1  | AAA        | 54      |
 | Types     | `#BC9858` | 7.3:1  | AAA        | 49      |
 | Functions | `#C08868` | 6.6:1  | AA         | 45      |
 | Strings   | `#9A8B60` | 5.9:1  | AA         | 40      |
-| Comments  | `#5C544A` | 2.7:1  | —          | 16      |
+| Comments  | `#6E665B` | 3.5:1  | AA (large) | 23      |
 
 <!-- verify:contrast:end -->
 
