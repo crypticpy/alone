@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: build · verify · test (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build themes from _src
+        run: npm run build:themes
+
+      - name: Generated themes must be committed
+        run: git diff --exit-code -- themes/
+
+      - name: Verify palette (L*, APCA, CVD, ANSI, wavelength, parity, README tables)
+        run: npm run verify
+
+      - name: Unit + pipeline tests
+        run: npm test
+
+      - name: Package VSIX
+        run: npx vsce package --out alone.vsix
+
+      - name: Upload VSIX
+        if: matrix.node == 24
+        uses: actions/upload-artifact@v4
+        with:
+          name: alone-vsix
+          path: alone.vsix
+          if-no-files-found: error

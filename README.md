@@ -47,20 +47,24 @@ Pure black (#000000) backgrounds cause halation—a glowing halo effect around b
 
 On calibrated OLED and miniLED displays, subtle color differences disappear. **Alone** ensures each syntax element has distinct L\* (perceptual lightness) values, computed in CIE L\*a\*b\* against the editor background `#0C0A09`:
 
+<!-- verify:ladder:start -->
+
 ```text
-L* 81  ████████████████████████████  Operators
+L* 81  ███████████████████████████   Operators
 L* 75  █████████████████████████     Variables
 L* 73  ████████████████████████      Numbers
-L* 68  █████████████████████         Keywords (bold)
-L* 65  ████████████████████          Types
-L* 62  ███████████████████           Functions
-L* 58  █████████████████             Strings (italic)
-L* 55  ████████████████              Special / regex
-L* 49  ██████████████                Punctuation
-L* 36  █████████                     Comments (italic)
+L* 68  ███████████████████████       Keywords (bold)
+L* 65  ██████████████████████        Types
+L* 61  ████████████████████          Functions
+L* 58  ███████████████████           Strings (italic)
+L* 55  ██████████████████            Special
+L* 48  ████████████████              Punctuation
+L* 36  ████████████                  Comments (italic)
 ```
 
-The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 36) is a ~45-unit range. The largest gaps cluster at the top and bottom (Operators→Variables 5.9, Special→Punctuation 6.7, Punctuation→Comments 12.3); the middle tiers run in the ~3 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. Run `node scripts/verify-palette.mjs` to recompute these against the live theme files; the verifier hard-fails on out-of-order roles and warns on any adjacent gap below 3 L\*.
+<!-- verify:ladder:end -->
+
+The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 36) is a ~45-unit range. The largest gaps cluster at the top and bottom (Operators→Variables 5.9, Special→Punctuation 6.7, Punctuation→Comments 12.3); the middle tiers run in the ~3 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. The ladder above is rendered by `scripts/verify-palette.mjs` from the live theme files; the verifier hard-fails on out-of-order roles and warns on any adjacent gap below 3 L\* (or ΔE2000 below 4).
 
 ---
 
@@ -68,32 +72,40 @@ The ladder is monotonic descending. The warm-only palette can't deliver large ga
 
 ### Syntax Colors
 
-| Element              | Hex       | Style    |
-| -------------------- | --------- | -------- |
-| Operators            | `#D4C8B8` | Normal   |
-| Variables            | `#C4B8A4` | Normal   |
-| Numbers              | `#E0A850` | Normal   |
-| Keywords             | `#C8A040` | **Bold** |
-| Types                | `#BC9858` | Normal   |
-| Interface/Type-param | `#BC9858` | _Italic_ |
-| Functions            | `#C08868` | Normal   |
-| Built-in funcs       | `#C08868` | _Italic_ |
-| Strings              | `#9A8B60` | _Italic_ |
-| Escapes              | `#D4B088` | **Bold** |
-| Regex / decorators   | `#A87878` | _Italic_ |
-| Comments             | `#5C544A` | _Italic_ |
-| Errors               | `#D46A66` | **Bold** |
+<!-- verify:syntax-colors:start -->
+
+| Element              | Hex       | Style              |
+| -------------------- | --------- | ------------------ |
+| Operators            | `#D4C8B8` | Normal             |
+| Variables            | `#C4B8A4` | Normal             |
+| Numbers              | `#E0A850` | Normal             |
+| Keywords             | `#C8A040` | **Bold**           |
+| Types                | `#BC9858` | Normal             |
+| Interface/Type-param | `#BC9858` | _Italic_           |
+| Functions            | `#C08868` | Normal             |
+| Built-in funcs       | `#C08868` | _Italic_           |
+| Strings              | `#9A8B60` | _Italic_           |
+| Escapes              | `#D4B088` | **Bold**           |
+| Regex / decorators   | `#A87878` | _Italic_           |
+| Comments             | `#5C544A` | _Italic_           |
+| Errors               | `#D46A66` | **Bold** underline |
+
+<!-- verify:syntax-colors:end -->
 
 ### Bracket Pair Colors
 
 Six warm variants for bracket colorization, ordered by perceptual lightness so **depth maps to dimness** — the deeper you nest, the dimmer the bracket:
 
-1. Bright Gold `#E0B868` (L\* ~78)
-2. Gold `#C89868` (L\* ~67)
+<!-- verify:bracket-colors:start -->
+
+1. Bright Gold `#E0B868` (L\* ~77)
+2. Gold `#C89868` (L\* ~66)
 3. Amber-Brown `#B08458` (L\* ~58)
 4. Umber `#967048` (L\* ~50)
-5. Dark Umber `#7A5C3C` (L\* ~42)
-6. Deep Brown `#604830` (L\* ~34)
+5. Dark Umber `#7A5C3C` (L\* ~41)
+6. Deep Brown `#604830` (L\* ~33)
+
+<!-- verify:bracket-colors:end -->
 
 ### Background Hierarchy
 
@@ -290,6 +302,23 @@ Matching terminal themes are included in the `terminal/` directory:
 
 All terminal themes use the same warm color palette with intentionally muted blue/cyan (replaced with warm grays).
 
+The sixteen ANSI slots (as shipped in the VS Code theme and mirrored in the terminal files):
+
+<!-- verify:ansi:start -->
+
+| Slot    | Hex       | L\* | Bright slot   | Hex       | L\* |
+| ------- | --------- | --- | ------------- | --------- | --- |
+| Black   | `#0C0A09` | 3   | BrightBlack   | `#5C544A` | 36  |
+| Red     | `#B85450` | 48  | BrightRed     | `#D46A66` | 57  |
+| Green   | `#9A8B60` | 58  | BrightGreen   | `#C4B078` | 72  |
+| Yellow  | `#D4A048` | 69  | BrightYellow  | `#E8B850` | 77  |
+| Blue    | `#8B8178` | 55  | BrightBlue    | `#A89A8C` | 64  |
+| Magenta | `#A87878` | 55  | BrightMagenta | `#C89088` | 65  |
+| Cyan    | `#9A8B7A` | 59  | BrightCyan    | `#B8A898` | 70  |
+| White   | `#C4B8A4` | 75  | BrightWhite   | `#E8DCD0` | 88  |
+
+<!-- verify:ansi:end -->
+
 ---
 
 ## Language Support
@@ -317,18 +346,22 @@ See `samples/` directory for demo files showcasing syntax highlighting.
 
 Key contrast ratios against the editor background (`#0C0A09`):
 
-| Element   | Color     | Contrast Ratio | WCAG Level        |
-| --------- | --------- | -------------- | ----------------- |
-| Operators | `#D4C8B8` | 12.0:1         | AAA               |
-| Variables | `#C4B8A4` | 10.1:1         | AAA               |
-| Numbers   | `#E0A850` | 9.3:1          | AAA               |
-| Keywords  | `#C8A040` | 8.1:1          | AAA               |
-| Types     | `#BC9858` | 7.3:1          | AAA               |
-| Functions | `#C08868` | 6.6:1          | AA                |
-| Strings   | `#9A8B60` | 5.9:1          | AA                |
-| Comments  | `#5C544A` | 2.7:1          | — (de-emphasized) |
+<!-- verify:contrast:start -->
 
-Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast formula. Comments intentionally use lower contrast to de-emphasize them. All primary code elements meet WCAG AA for normal text; five of eight clear AAA. Run `node scripts/verify-palette.mjs` to regenerate.
+| Element   | Color     | WCAG   | WCAG level | APCA Lc |
+| --------- | --------- | ------ | ---------- | ------- |
+| Operators | `#D4C8B8` | 12.0:1 | AAA        | 74      |
+| Variables | `#C4B8A4` | 10.1:1 | AAA        | 65      |
+| Numbers   | `#E0A850` | 9.3:1  | AAA        | 61      |
+| Keywords  | `#C8A040` | 8.1:1  | AAA        | 54      |
+| Types     | `#BC9858` | 7.3:1  | AAA        | 49      |
+| Functions | `#C08868` | 6.6:1  | AA         | 45      |
+| Strings   | `#9A8B60` | 5.9:1  | AA         | 40      |
+| Comments  | `#5C544A` | 2.7:1  | —          | 16      |
+
+<!-- verify:contrast:end -->
+
+Computed against the editor background (`#0C0A09`) using the WCAG 2.x contrast formula. Comments intentionally use lower contrast to de-emphasize them. APCA Lc is the [APCA](https://github.com/Myndex/SAPC-APCA) (0.0.98G-4) lightness-contrast value; ≥ 60 is the body-text target, ≥ 45 large text, ≥ 30 the floor for non-essential text. All primary code elements meet WCAG AA for normal text; five of eight clear AAA. This table is rendered by `node scripts/verify-palette.mjs --write-readme`.
 
 ### Astigmatism Considerations
 
@@ -406,13 +439,17 @@ The source of truth lives under `themes/_src/`:
 - **`themes/_src/base.yaml`** — the structural skeleton. Every key the variants share (shape, scopes, font styles, and any hex that happens to be identical across all variants) lives here as a literal. Every leaf that varies across variants is written as `${token.name}`.
 - **`themes/_src/variants/<name>.yaml`** — per-variant bindings: `display`, `filename`, a `verify` block (which wavelength band the variant should pass and whether it's the "standard" used for the L\* ladder / README WCAG checks), and a `tokens:` block supplying the hex/alpha values for that variant's `${token.name}` references.
 
-Two scripts:
+The scripts:
 
 ```bash
-npm run build:themes   # regenerate themes/*.json from _src/
-npm run verify         # check L*, WCAG, wavelength bands, and key parity
-npm run check          # both, in sequence
+npm run build:themes                          # regenerate themes/*.json from _src/
+npm run verify                                # L* ladder, APCA floors, CVD + ANSI ΔE2000, wavelength scan, key parity, README tables
+npm run check                                 # both, in sequence
+npm test                                      # unit tests (colour math, generator rules) + pipeline tests (determinism, snapshot parity)
+node scripts/verify-palette.mjs --write-readme  # re-render the verifier-owned README tables after a palette change
 ```
+
+Every numeric table in this README that sits between `<!-- verify:…:start/end -->` markers is rendered by the verifier from the standard variant; edit the palette, run `--write-readme`, and commit the result — the default `verify` fails on drift. CI (`.github/workflows/ci.yml`) runs build → verify → test → `vsce package` on every push and pull request.
 
 To add a new variant: copy an existing variants file, change `display` / `filename` / `verify`, fill in the `tokens:` block with the new palette, then `npm run check`. No edits to `base.yaml` are needed unless the new variant introduces a new key or scope (in which case all variants must add it — the parity check enforces this).
 
