@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload VSIX
         if: matrix.node == 24
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: alone-vsix
           path: alone.vsix
