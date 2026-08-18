@@ -64,7 +64,7 @@ L* 44  ███████████████               Comments (ita
 
 <!-- verify:ladder:end -->
 
-The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — Operators (L\* 81) down to Comments (L\* 44) is a ~37-unit range. The largest gaps sit at the top and bottom (Operators→Variables 5.8, Special→Punctuation 6.7, Punctuation→Comments 4.9); the middle tiers run in the 3–4 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. The ladder above is rendered by `scripts/verify-palette.mjs` from the live theme files; the verifier hard-fails on out-of-order roles and on any adjacent gap below 3 L\* or ΔE2000 below 4.
+The ladder is monotonic descending. The warm-only palette can't deliver large gaps across all ten tiers — the whole run from Operators to Comments spans under 40 L\*. The largest gaps sit at the top and bottom (Operators→Variables, Special→Punctuation, Punctuation→Comments); the middle tiers run in the 3–4 L\* range and rely on font style (italic strings/comments/interfaces/`defaultLibrary`, bold keywords/escapes) and hue (gold vs olive vs dusty-rose) to carry the differentiation that lightness alone can't. The ladder above is rendered by `scripts/verify-palette.mjs` from the live theme files (exact per-rung L\* and gaps are in its section 1 output); the verifier hard-fails on out-of-order roles and on any adjacent gap below 3 L\* or ΔE2000 below 4.
 
 ---
 
