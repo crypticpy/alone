@@ -2,13 +2,14 @@
   "name": "alone",
   "displayName": "Alone",
   "description": "A theme for those who thrive coding alone in the dark. The ultimate expression of vision science—protect your dark adaptation during extended sessions.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "publisher": "crypticpy",
   "author": {
     "name": "Chris",
     "url": "https://github.com/crypticpy"
   },
   "license": "MIT",
+  "pricing": "Free",
   "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#0C0A09",
@@ -21,24 +22,16 @@
     "Themes"
   ],
   "keywords": [
-    "dark",
-    "theme",
-    "dark room",
-    "night vision",
-    "scotopic",
+    "dark theme",
+    "warm",
+    "amber",
+    "OLED",
     "eye strain",
     "low light",
-    "OLED",
-    "miniLED",
-    "eye health",
-    "dark adaptation",
-    "warm colors",
-    "coding at night",
-    "low blue light",
-    "vision science",
-    "halation",
-    "comfortable",
-    "late night coding"
+    "night",
+    "astigmatism",
+    "dark room",
+    "vision science"
   ],
   "repository": {
     "type": "git",
@@ -65,13 +58,7 @@
         "uiTheme": "vs-dark",
         "path": "./themes/alone-focused-color-theme.json"
       }
-    ],
-    "configurationDefaults": {
-      "[*]": {
-        "editor.bracketPairColorization.enabled": true,
-        "editor.guides.bracketPairs": "active"
-      }
-    }
+    ]
   },
   "sponsor": {
     "url": "https://github.com/sponsors/crypticpy"
@@ -85,10 +72,6 @@
   ],
   "markdown": "github",
   "qna": "marketplace",
-  "__metadata": {
-    "id": "alone-theme",
-    "publisherDisplayName": "crypticpy"
-  },
   "devDependencies": {
     "yaml": "^2.9.0"
   },

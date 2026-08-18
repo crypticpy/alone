@@ -68,32 +68,32 @@ The ladder is monotonic descending. The warm-only palette can't deliver large ga
 
 ### Syntax Colors
 
-| Element              | Color                                                    | Hex       | Style    |
-| -------------------- | -------------------------------------------------------- | --------- | -------- |
-| Operators            | ![#D4C8B8](https://via.placeholder.com/15/D4C8B8/D4C8B8) | `#D4C8B8` | Normal   |
-| Variables            | ![#C4B8A4](https://via.placeholder.com/15/C4B8A4/C4B8A4) | `#C4B8A4` | Normal   |
-| Numbers              | ![#E0A850](https://via.placeholder.com/15/E0A850/E0A850) | `#E0A850` | Normal   |
-| Keywords             | ![#C8A040](https://via.placeholder.com/15/C8A040/C8A040) | `#C8A040` | **Bold** |
-| Types                | ![#BC9858](https://via.placeholder.com/15/BC9858/BC9858) | `#BC9858` | Normal   |
-| Interface/Type-param | ![#BC9858](https://via.placeholder.com/15/BC9858/BC9858) | `#BC9858` | _Italic_ |
-| Functions            | ![#C08868](https://via.placeholder.com/15/C08868/C08868) | `#C08868` | Normal   |
-| Built-in funcs       | ![#C08868](https://via.placeholder.com/15/C08868/C08868) | `#C08868` | _Italic_ |
-| Strings              | ![#9A8B60](https://via.placeholder.com/15/9A8B60/9A8B60) | `#9A8B60` | _Italic_ |
-| Escapes              | ![#D4B088](https://via.placeholder.com/15/D4B088/D4B088) | `#D4B088` | **Bold** |
-| Regex / decorators   | ![#A87878](https://via.placeholder.com/15/A87878/A87878) | `#A87878` | _Italic_ |
-| Comments             | ![#5C544A](https://via.placeholder.com/15/5C544A/5C544A) | `#5C544A` | _Italic_ |
-| Errors               | ![#D46A66](https://via.placeholder.com/15/D46A66/D46A66) | `#D46A66` | **Bold** |
+| Element              | Hex       | Style    |
+| -------------------- | --------- | -------- |
+| Operators            | `#D4C8B8` | Normal   |
+| Variables            | `#C4B8A4` | Normal   |
+| Numbers              | `#E0A850` | Normal   |
+| Keywords             | `#C8A040` | **Bold** |
+| Types                | `#BC9858` | Normal   |
+| Interface/Type-param | `#BC9858` | _Italic_ |
+| Functions            | `#C08868` | Normal   |
+| Built-in funcs       | `#C08868` | _Italic_ |
+| Strings              | `#9A8B60` | _Italic_ |
+| Escapes              | `#D4B088` | **Bold** |
+| Regex / decorators   | `#A87878` | _Italic_ |
+| Comments             | `#5C544A` | _Italic_ |
+| Errors               | `#D46A66` | **Bold** |
 
 ### Bracket Pair Colors
 
 Six warm variants for bracket colorization, ordered by perceptual lightness so **depth maps to dimness** — the deeper you nest, the dimmer the bracket:
 
-1. ![#E0B868](https://via.placeholder.com/15/E0B868/E0B868) Bright Gold `#E0B868` &nbsp;(L\* ~78)
-2. ![#C89868](https://via.placeholder.com/15/C89868/C89868) Gold `#C89868` &nbsp;(L\* ~67)
-3. ![#B08458](https://via.placeholder.com/15/B08458/B08458) Amber-Brown `#B08458` &nbsp;(L\* ~58)
-4. ![#967048](https://via.placeholder.com/15/967048/967048) Umber `#967048` &nbsp;(L\* ~50)
-5. ![#7A5C3C](https://via.placeholder.com/15/7A5C3C/7A5C3C) Dark Umber `#7A5C3C` &nbsp;(L\* ~42)
-6. ![#604830](https://via.placeholder.com/15/604830/604830) Deep Brown `#604830` &nbsp;(L\* ~34)
+1. Bright Gold `#E0B868` (L\* ~78)
+2. Gold `#C89868` (L\* ~67)
+3. Amber-Brown `#B08458` (L\* ~58)
+4. Umber `#967048` (L\* ~50)
+5. Dark Umber `#7A5C3C` (L\* ~42)
+6. Deep Brown `#604830` (L\* ~34)
 
 ### Background Hierarchy
 
@@ -123,7 +123,7 @@ Six warm variants for bracket colorization, ordered by perceptual lightness so *
 
 ### From VSIX (Recommended for Manual Install)
 
-1. Download the latest `.vsix` from [Releases](https://github.com/crypticpy/alone/releases) or the repo root
+1. Download the latest `.vsix` from [Releases](https://github.com/crypticpy/alone/releases)
 2. In VS Code, open Command Palette (Ctrl+Shift+P / Cmd+Shift+P)
 3. Run **Extensions: Install from VSIX...**
 4. Select the downloaded `.vsix` file

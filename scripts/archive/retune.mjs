@@ -2,7 +2,7 @@
 /**
  * One-shot retune script for the Alone theme (v1.2.0).
  *
- * Applies the palette changes documented in plans/2026-05-21-theme-retune.md
+ * Applies the palette changes documented in docs/plans/2026-05-21-theme-retune.md
  * to the three theme JSONs in themes/. Uses anchored string find/replace so
  * the source files keep their blank-line structure (JSON.parse/stringify would
  * collapse the visual sections).
@@ -10,7 +10,7 @@
  * Each edit's `find` includes a unique anchor (typically a JSON key) and we
  * assert that every edit matches at least once — silent misses fail the run.
  *
- * Usage: node scripts/retune.mjs
+ * Usage: node scripts/archive/retune.mjs
  */
 
 import fs from 'node:fs';
@@ -21,7 +21,7 @@ const HERE = path.dirname(url.fileURLToPath(import.meta.url));
 const THEMES = path.join(HERE, '..', 'themes');
 
 // ────────────────────────────────────────────────────────────────────
-// Palette deltas — see plans/2026-05-21-theme-retune.md for rationale.
+// Palette deltas — see docs/plans/2026-05-21-theme-retune.md for rationale.
 //
 // Standard palette changes (v1.1.0 → v1.2.0):
 //   Functions:        #B07850 (L* 57) → #C08868 (L* 62)   ladder fix + Function/Type gap

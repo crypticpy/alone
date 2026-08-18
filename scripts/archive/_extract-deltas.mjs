@@ -25,7 +25,7 @@
  * This file is committed only for historical traceability of the v1.3.0
  * migration; it is not part of the build pipeline.
  *
- * Usage: node scripts/_extract-deltas.mjs
+ * Usage: node scripts/archive/_extract-deltas.mjs
  */
 
 import fs from 'node:fs';
