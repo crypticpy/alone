@@ -2,7 +2,8 @@
 
 **A theme for those who thrive coding alone in the dark.**
 
-<!-- hero: images/hero.png — added with the release pipeline (see docs/PUBLISHING.md) -->
+<!-- screenshot slot: replace with ![Alone — samples/demo.tsx](images/screenshot-alone.png) once captured (scripts/capture-screenshots.sh, see docs/PUBLISHING.md) -->
+![Alone palette — syntax ladder, bracket pairs, ANSI slots](images/palette-alone.png)
 
 Alone is a warm, low-luminance dark theme for people who code in dark rooms for hours. Every colour in it — syntax, UI chrome, terminal — has a dominant wavelength between 575 and 611 nm: gold, amber, olive, terracotta, dusty rose. There is no blue, no cyan, no purple, and no white text. Foregrounds sit well below the brightness of a typical dark theme, contrast is tuned with APCA rather than maxed out, and a verifier script fails the build if any of that drifts.
 
@@ -263,13 +264,19 @@ The full-featured theme with balanced contrast for extended coding sessions. Def
 
 For pitch-black rooms and light-sensitive eyes. All syntax colours reduced ~20 % in brightness, backgrounds slightly lifted to reduce contrast. Verified against its own, lower APCA floors.
 
+![Alone Soft palette](images/palette-alone-soft.png)
+
 ### Alone Focused
 
 For concentration. UI chrome is muted — activity-bar badges dimmed, sidebar de-emphasised, borders hidden. Syntax highlighting unchanged. Your code takes centre stage.
 
+![Alone Focused palette](images/palette-alone-focused.png)
+
 ### Alone Roman
 
 The Standard palette with **no italics** — for astigmatic readers who find slanted monospace edges fringe, or anyone who simply dislikes italic code. Every rule that Standard sets in italic (comments, strings, docstrings, regex, decorators, interfaces, type parameters, namespaces, `*.defaultLibrary`, `*.async`, `this`/`self`) is upright here; the only italic left is Markdown `*emphasis*`, which is the document's own formatting. Bold keywords/escapes/errors are unchanged. Two hexes differ from Standard so the pairs that Standard tells apart with italics stay separable on colour alone under red-green colour-vision deficiency: strings `#9A8B60 → #9C8B4A` and `*.defaultLibrary` `#B08C50 → #AA884C` (both verified ΔE2000 ≥ 5 after protan/deutan simulation). What you give up is the italic-only distinctions — interfaces look like classes, library calls like local ones, async like sync.
+
+![Alone Roman palette](images/palette-alone-roman.png)
 
 ---
 

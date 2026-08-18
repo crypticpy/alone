@@ -17,9 +17,9 @@ jobs:
       matrix:
         node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -38,12 +38,15 @@ jobs:
       - name: Unit + pipeline tests
         run: npm test
 
+      - name: Palette PNGs must be current
+        run: node scripts/render-palette.mjs --check
+
       - name: Package VSIX
         run: npx vsce package --out alone.vsix
 
       - name: Upload VSIX
         if: matrix.node == 24
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: alone-vsix
           path: alone.vsix

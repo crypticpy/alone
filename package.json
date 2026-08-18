@@ -84,8 +84,9 @@
   "scripts": {
     "build:themes": "node scripts/build-themes.mjs",
     "verify": "node scripts/verify-palette.mjs",
-    "check": "npm run build:themes && npm run verify",
+    "check": "npm run build:themes && npm run verify && node scripts/render-palette.mjs --check",
     "test": "node --test tests/*.test.mjs",
-    "package": "vsce package"
+    "package": "vsce package",
+    "render:palette": "node scripts/render-palette.mjs"
   }
 }

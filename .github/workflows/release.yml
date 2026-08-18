@@ -1,0 +1,88 @@
+name: Release
+
+# Tag-driven release: `git tag v2.0.0 && git push origin v2.0.0`
+#   1. build → verify → test (same gate as CI)
+#   2. package the VSIX and attach it to a GitHub Release
+#   3. publish to the VS Code Marketplace (VSCE_PAT) and Open VSX (OVSX_PAT)
+# Publish steps are skipped when the corresponding secret is absent, so a
+# workflow_dispatch run on a fork or before the accounts exist still produces
+# a Release + VSIX. See docs/PUBLISHING.md for the account/PAT setup.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to Marketplace / Open VSX (needs secrets)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: package · release · publish
+    runs-on: ubuntu-latest
+    env:
+      # `secrets` isn't available in step-level `if`, so surface presence here.
+      HAS_VSCE_PAT: ${{ secrets.VSCE_PAT != '' }}
+      HAS_OVSX_PAT: ${{ secrets.OVSX_PAT != '' }}
+      DO_PUBLISH: ${{ startsWith(github.ref, 'refs/tags/v') || inputs.publish == true }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Tag must match package.json version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::tag v$tag does not match package.json version $pkg"; exit 1
+          fi
+
+      - name: Build · verify · palette PNGs · test
+        run: npm run check && npm test
+
+      - name: Package VSIX
+        id: pkg
+        run: |
+          npx vsce package --out "alone-$(node -p "require('./package.json').version").vsix"
+          echo "vsix=$(ls alone-*.vsix)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.pkg.outputs.vsix }}
+          path: ${{ steps.pkg.outputs.vsix }}
+          if-no-files-found: error
+
+      - name: GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" \
+            --title "Alone $GITHUB_REF_NAME" \
+            --notes "See [CHANGELOG.md](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md) for details." \
+            --verify-tag
+
+      - name: Publish to VS Code Marketplace
+        if: env.HAS_VSCE_PAT == 'true' && env.DO_PUBLISH == 'true'
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish --packagePath "${{ steps.pkg.outputs.vsix }}"
+
+      - name: Publish to Open VSX
+        if: env.HAS_OVSX_PAT == 'true' && env.DO_PUBLISH == 'true'
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx@1 publish "${{ steps.pkg.outputs.vsix }}" --pat "$OVSX_PAT"

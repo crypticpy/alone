@@ -12,6 +12,9 @@ themes/_src/**
 themes/_snapshot/**
 samples/**
 images/icon.svg
+# README images are served from the GitHub repo (vsce rewrites relative URLs); only the icon ships
+images/palette-*.png
+images/screenshot-*.png
 *.vsix
 package-lock.json
 *.md
