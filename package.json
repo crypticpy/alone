@@ -78,8 +78,8 @@
   "markdown": "github",
   "qna": "marketplace",
   "devDependencies": {
-    "@vscode/vsce": "^3.9.2",
-    "yaml": "^2.9.0"
+    "@vscode/vsce": "^4.0.0",
+    "yaml": "^2.9.1"
   },
   "scripts": {
     "build:themes": "node scripts/build-themes.mjs",
